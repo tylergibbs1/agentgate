@@ -115,7 +115,9 @@ export class Gate {
 			};
 		}
 
-		const auth = this.authProvider.getAuth(resolved.service);
+		const auth = resolved.authRequired
+			? this.authProvider.getAuth(resolved.service)
+			: null;
 		const executeStart = performance.now();
 		const result = await this.executor.execute(resolved, auth);
 		const executedMs = Math.round(performance.now() - executeStart);

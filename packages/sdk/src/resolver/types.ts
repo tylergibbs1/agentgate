@@ -6,6 +6,7 @@ export interface ResolvedIntent {
 	params: Record<string, unknown>;
 	confidence: number;
 	alternatives: ResolvedIntent[];
+	authRequired: boolean;
 }
 
 export interface DiscoveryResult {

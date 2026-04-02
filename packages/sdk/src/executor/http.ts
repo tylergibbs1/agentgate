@@ -6,14 +6,16 @@ import type { ExecutionResult, Executor } from "./types.js";
 export class HttpExecutor implements Executor {
 	async execute(
 		resolved: ResolvedIntent,
-		auth: AuthHeader,
+		auth: AuthHeader | null,
 	): Promise<ExecutionResult> {
 		const { method, url } = resolved.endpoint;
 
 		const headers: Record<string, string> = {
 			"Content-Type": "application/json",
-			[auth.name]: auth.value,
 		};
+		if (auth) {
+			headers[auth.name] = auth.value;
+		}
 
 		const hasBody = method !== "GET" && method !== "DELETE";
 		let finalUrl = url;

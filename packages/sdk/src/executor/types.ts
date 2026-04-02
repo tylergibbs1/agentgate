@@ -9,5 +9,5 @@ export interface ExecutionResult {
 }
 
 export interface Executor {
-	execute(resolved: ResolvedIntent, auth: AuthHeader): Promise<ExecutionResult>;
+	execute(resolved: ResolvedIntent, auth: AuthHeader | null): Promise<ExecutionResult>;
 }

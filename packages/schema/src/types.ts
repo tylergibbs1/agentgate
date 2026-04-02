@@ -16,6 +16,11 @@ export interface AuthConfig {
 	envVar: string;
 	header?: string;
 	prefix?: string;
+	required?: boolean;
+}
+
+export interface IntentAuth {
+	required?: boolean;
 }
 
 export interface Intent {
@@ -26,6 +31,7 @@ export interface Intent {
 	params: IntentParam[];
 	response: ResponseShape;
 	flow?: FlowStep[];
+	auth?: IntentAuth;
 }
 
 export interface EndpointConfig {

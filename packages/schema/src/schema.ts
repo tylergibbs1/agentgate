@@ -25,6 +25,7 @@ export const agentSpecSchema = {
 				envVar: { type: "string", minLength: 1 },
 				header: { type: "string" },
 				prefix: { type: "string" },
+				required: { type: "boolean" },
 			},
 		},
 		intents: {
@@ -110,6 +111,13 @@ export const agentSpecSchema = {
 									},
 								},
 							},
+						},
+					},
+					auth: {
+						type: "object",
+						additionalProperties: false,
+						properties: {
+							required: { type: "boolean" },
 						},
 					},
 					flow: {

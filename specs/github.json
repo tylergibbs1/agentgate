@@ -8,7 +8,8 @@
 	"auth": {
 		"type": "bearer",
 		"envVar": "GITHUB_TOKEN",
-		"prefix": "Bearer"
+		"prefix": "Bearer",
+		"required": false
 	},
 	"intents": [
 		{
@@ -19,7 +20,10 @@
 				"open issue in {repo} {title}",
 				"new issue {repo} {title}"
 			],
-			"endpoint": { "method": "POST", "path": "/repos/{repo}/issues" },
+			"endpoint": {
+				"method": "POST",
+				"path": "/repos/{repo}/issues"
+			},
 			"params": [
 				{
 					"name": "repo",
@@ -48,9 +52,18 @@
 				"type": "object",
 				"description": "GitHub Issue object",
 				"properties": {
-					"number": { "type": "number", "description": "Issue number" },
-					"html_url": { "type": "string", "description": "URL to the issue" }
+					"number": {
+						"type": "number",
+						"description": "Issue number"
+					},
+					"html_url": {
+						"type": "string",
+						"description": "URL to the issue"
+					}
 				}
+			},
+			"auth": {
+				"required": true
 			}
 		},
 		{
@@ -61,7 +74,10 @@
 				"show repos for {owner}",
 				"get repos {owner}"
 			],
-			"endpoint": { "method": "GET", "path": "/users/{owner}/repos" },
+			"endpoint": {
+				"method": "GET",
+				"path": "/users/{owner}/repos"
+			},
 			"params": [
 				{
 					"name": "owner",
@@ -92,7 +108,10 @@
 				"open pull request in {repo} from {head} to {base}",
 				"new pr {repo} {head} into {base}"
 			],
-			"endpoint": { "method": "POST", "path": "/repos/{repo}/pulls" },
+			"endpoint": {
+				"method": "POST",
+				"path": "/repos/{repo}/pulls"
+			},
 			"params": [
 				{
 					"name": "repo",
@@ -129,9 +148,18 @@
 				"type": "object",
 				"description": "GitHub Pull Request object",
 				"properties": {
-					"number": { "type": "number", "description": "PR number" },
-					"html_url": { "type": "string", "description": "URL to the PR" }
+					"number": {
+						"type": "number",
+						"description": "PR number"
+					},
+					"html_url": {
+						"type": "string",
+						"description": "URL to the PR"
+					}
 				}
+			},
+			"auth": {
+				"required": true
 			}
 		},
 		{
@@ -142,7 +170,10 @@
 				"look up user {username}",
 				"github user {username}"
 			],
-			"endpoint": { "method": "GET", "path": "/users/{username}" },
+			"endpoint": {
+				"method": "GET",
+				"path": "/users/{username}"
+			},
 			"params": [
 				{
 					"name": "username",
@@ -160,8 +191,14 @@
 		{
 			"id": "star_repo",
 			"description": "Star a repository",
-			"patterns": ["star {repo}", "star repo {repo}"],
-			"endpoint": { "method": "PUT", "path": "/user/starred/{repo}" },
+			"patterns": [
+				"star {repo}",
+				"star repo {repo}"
+			],
+			"endpoint": {
+				"method": "PUT",
+				"path": "/user/starred/{repo}"
+			},
 			"params": [
 				{
 					"name": "repo",
@@ -175,6 +212,9 @@
 			"response": {
 				"type": "string",
 				"description": "Empty response on success (204)"
+			},
+			"auth": {
+				"required": true
 			}
 		}
 	]
