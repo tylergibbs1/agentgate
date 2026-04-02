@@ -1,0 +1,27 @@
+{
+	"name": "@grayhaven/agentgate-openapi",
+	"version": "0.1.0",
+	"description": "Convert OpenAPI specs to AgentGate agents.json format",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"bin": {
+		"agentgate-openapi": "./dist/cli.js"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"scripts": {
+		"build": "tsc",
+		"test": "vitest run"
+	},
+	"dependencies": {
+		"@grayhaven/agentgate-schema": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/node": "^22.0.0"
+	}
+}

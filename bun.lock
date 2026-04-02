@@ -34,6 +34,19 @@
         "@types/node": "^22.0.0",
       },
     },
+    "packages/openapi": {
+      "name": "@grayhaven/agentgate-openapi",
+      "version": "0.1.0",
+      "bin": {
+        "agentgate-openapi": "./dist/cli.js",
+      },
+      "dependencies": {
+        "@grayhaven/agentgate-schema": "workspace:*",
+      },
+      "devDependencies": {
+        "@types/node": "^22.0.0",
+      },
+    },
     "packages/resolver-api": {
       "name": "@agentgate/resolver-api",
       "version": "0.1.0",
@@ -161,6 +174,8 @@
     "@esbuild/win32-x64": ["@esbuild/win32-x64@0.27.7", "", { "os": "win32", "cpu": "x64" }, "sha512-56hiAJPhwQ1R4i+21FVF7V8kSD5zZTdHcVuRFMW0hn753vVfQN8xlx4uOPT4xoGH0Z/oVATuR82AiqSTDIpaHg=="],
 
     "@grayhaven/agentgate": ["@grayhaven/agentgate@workspace:packages/sdk"],
+
+    "@grayhaven/agentgate-openapi": ["@grayhaven/agentgate-openapi@workspace:packages/openapi"],
 
     "@grayhaven/agentgate-schema": ["@grayhaven/agentgate-schema@workspace:packages/schema"],
 
