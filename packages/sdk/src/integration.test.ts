@@ -35,7 +35,7 @@ describe("real spec files", () => {
 
 	it("has 25 total intents", () => {
 		const total = specs.reduce((sum, s) => sum + s.intents.length, 0);
-		expect(total).toBe(25);
+		expect(total).toBe(26);
 	});
 
 	it("all intents have at least one pattern", () => {

@@ -191,10 +191,7 @@
 		{
 			"id": "star_repo",
 			"description": "Star a repository",
-			"patterns": [
-				"star {repo}",
-				"star repo {repo}"
-			],
+			"patterns": ["star {repo}", "star repo {repo}"],
 			"endpoint": {
 				"method": "PUT",
 				"path": "/user/starred/{repo}"

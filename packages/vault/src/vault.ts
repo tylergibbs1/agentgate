@@ -80,6 +80,7 @@ export class Vault {
 			ciphertext: encrypted.ciphertext,
 			iv: encrypted.iv,
 			tag: encrypted.tag,
+			// biome-ignore lint/style/noNonNullAssertion: index checked above
 			createdAt: existing >= 0 ? data.credentials[existing]!.createdAt : now,
 			updatedAt: now,
 		};
@@ -101,6 +102,7 @@ export class Vault {
 
 	list(): string[] {
 		this.ensureUnlocked();
+		// biome-ignore lint/style/noNonNullAssertion: ensureUnlocked guarantees non-null
 		return this.data!.credentials.map((c) => c.service);
 	}
 
@@ -125,7 +127,7 @@ export class Vault {
 
 	checkPermission(agentId: string, service: string, op: string): boolean {
 		this.ensureUnlocked();
-		const perm = this.data!.permissions.find(
+		const perm = this.data?.permissions.find(
 			(p) => p.agentId === agentId && p.service === service,
 		);
 		return perm

@@ -50,6 +50,8 @@ export function createApp(specs: AgentSpec[]) {
 			endpoint: result.endpoint,
 			params: result.params,
 			confidence: Math.round(result.confidence * 100) / 100,
+			authRequired: result.authRequired,
+			contentType: result.contentType,
 			alternatives: result.alternatives.map((a) => ({
 				service: a.service,
 				intentId: a.intentId,

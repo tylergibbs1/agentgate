@@ -13,7 +13,18 @@ export class HttpResolver implements Resolver {
 		if (response.status === 404) return null;
 		if (!response.ok) return null;
 
-		return (await response.json()) as ResolvedIntent;
+		const data = (await response.json()) as Partial<ResolvedIntent>;
+		return {
+			service: data.service ?? "",
+			intentId: data.intentId ?? "",
+			description: data.description ?? "",
+			endpoint: data.endpoint ?? { method: "GET", url: "" },
+			params: data.params ?? {},
+			confidence: data.confidence ?? 0,
+			alternatives: data.alternatives ?? [],
+			authRequired: data.authRequired ?? true,
+			contentType: data.contentType ?? "application/json",
+		};
 	}
 
 	async discover(query: string): Promise<DiscoveryResult[]> {

@@ -1,5 +1,10 @@
 export { Gate } from "./gate.js";
-export type { GateOptions, GateResult, DryRunResult } from "./gate.js";
+export type {
+	GateOptions,
+	GateResult,
+	DryRunResult,
+	FlowResult,
+} from "./gate.js";
 export type {
 	ResolvedIntent,
 	DiscoveryResult,

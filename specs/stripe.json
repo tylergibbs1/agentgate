@@ -20,7 +20,10 @@
 				"charge {amount} to {customer}",
 				"bill {customer} {amount}"
 			],
-			"endpoint": { "method": "POST", "path": "/v1/charges" },
+			"endpoint": {
+				"method": "POST",
+				"path": "/v1/charges"
+			},
 			"params": [
 				{
 					"name": "customer",
@@ -51,9 +54,18 @@
 				"type": "object",
 				"description": "Stripe Charge object",
 				"properties": {
-					"id": { "type": "string", "description": "Charge ID" },
-					"amount": { "type": "number", "description": "Amount in cents" },
-					"status": { "type": "string", "description": "Charge status" }
+					"id": {
+						"type": "string",
+						"description": "Charge ID"
+					},
+					"amount": {
+						"type": "number",
+						"description": "Amount in cents"
+					},
+					"status": {
+						"type": "string",
+						"description": "Charge status"
+					}
 				}
 			}
 		},
@@ -65,7 +77,10 @@
 				"add customer {email}",
 				"new customer {email}"
 			],
-			"endpoint": { "method": "POST", "path": "/v1/customers" },
+			"endpoint": {
+				"method": "POST",
+				"path": "/v1/customers"
+			},
 			"params": [
 				{
 					"name": "email",
@@ -86,8 +101,14 @@
 				"type": "object",
 				"description": "Stripe Customer object",
 				"properties": {
-					"id": { "type": "string", "description": "Customer ID (cus_...)" },
-					"email": { "type": "string", "description": "Customer email" }
+					"id": {
+						"type": "string",
+						"description": "Customer ID (cus_...)"
+					},
+					"email": {
+						"type": "string",
+						"description": "Customer email"
+					}
 				}
 			}
 		},
@@ -99,7 +120,10 @@
 				"retrieve customer {customer}",
 				"look up customer {customer}"
 			],
-			"endpoint": { "method": "GET", "path": "/v1/customers/{customer}" },
+			"endpoint": {
+				"method": "GET",
+				"path": "/v1/customers/{customer}"
+			},
 			"params": [
 				{
 					"name": "customer",
@@ -123,7 +147,10 @@
 				"payment intent {amount}",
 				"collect {amount} from {customer}"
 			],
-			"endpoint": { "method": "POST", "path": "/v1/payment_intents" },
+			"endpoint": {
+				"method": "POST",
+				"path": "/v1/payment_intents"
+			},
 			"params": [
 				{
 					"name": "amount",
@@ -154,12 +181,18 @@
 				"type": "object",
 				"description": "Stripe PaymentIntent object",
 				"properties": {
-					"id": { "type": "string", "description": "PaymentIntent ID" },
+					"id": {
+						"type": "string",
+						"description": "PaymentIntent ID"
+					},
 					"client_secret": {
 						"type": "string",
 						"description": "Client secret for frontend"
 					},
-					"status": { "type": "string", "description": "PaymentIntent status" }
+					"status": {
+						"type": "string",
+						"description": "PaymentIntent status"
+					}
 				}
 			}
 		},
@@ -171,7 +204,10 @@
 				"show charges",
 				"get charges for {customer}"
 			],
-			"endpoint": { "method": "GET", "path": "/v1/charges" },
+			"endpoint": {
+				"method": "GET",
+				"path": "/v1/charges"
+			},
 			"params": [
 				{
 					"name": "customer",
@@ -203,7 +239,10 @@
 				"refund {charge}",
 				"issue refund for {charge}"
 			],
-			"endpoint": { "method": "POST", "path": "/v1/refunds" },
+			"endpoint": {
+				"method": "POST",
+				"path": "/v1/refunds"
+			},
 			"params": [
 				{
 					"name": "charge",
@@ -234,7 +273,10 @@
 				"subscribe {customer} to {price}",
 				"create subscription for {customer} with {price}"
 			],
-			"endpoint": { "method": "POST", "path": "/v1/subscriptions" },
+			"endpoint": {
+				"method": "POST",
+				"path": "/v1/subscriptions"
+			},
 			"params": [
 				{
 					"name": "customer",
@@ -257,8 +299,14 @@
 				"type": "object",
 				"description": "Stripe Subscription object",
 				"properties": {
-					"id": { "type": "string", "description": "Subscription ID" },
-					"status": { "type": "string", "description": "Subscription status" }
+					"id": {
+						"type": "string",
+						"description": "Subscription ID"
+					},
+					"status": {
+						"type": "string",
+						"description": "Subscription status"
+					}
 				}
 			}
 		},
@@ -266,7 +314,10 @@
 			"id": "get_balance",
 			"description": "Retrieve the current account balance",
 			"patterns": ["get balance", "show balance", "check balance"],
-			"endpoint": { "method": "GET", "path": "/v1/balance" },
+			"endpoint": {
+				"method": "GET",
+				"path": "/v1/balance"
+			},
 			"params": [],
 			"response": {
 				"type": "object",
@@ -282,6 +333,40 @@
 					}
 				}
 			}
+		},
+		{
+			"id": "subscribe_new_customer",
+			"description": "Create a new customer and subscribe them to a plan",
+			"patterns": [
+				"subscribe {email} to {price}",
+				"sign up {email} for {price}"
+			],
+			"endpoint": {
+				"method": "POST",
+				"path": "/v1/customers"
+			},
+			"params": [
+				{
+					"name": "email",
+					"type": "string",
+					"required": true,
+					"description": "Customer email",
+					"in": "body"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "New customer"
+			},
+			"flow": [
+				{
+					"intentId": "create_subscription",
+					"description": "Subscribe the new customer to the plan",
+					"mapParams": {
+						"customer": "id"
+					}
+				}
+			]
 		}
 	]
 }

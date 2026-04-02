@@ -107,9 +107,7 @@ export class LocalResolver implements Resolver {
 
 		// Intent-level auth overrides service-level auth
 		const authRequired =
-			entry.intent.auth?.required ??
-			entry.spec.auth.required ??
-			true;
+			entry.intent.auth?.required ?? entry.spec.auth.required ?? true;
 
 		return {
 			service: entry.spec.service.name,
