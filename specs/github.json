@@ -1,0 +1,181 @@
+{
+	"version": "1.0",
+	"service": {
+		"name": "github",
+		"description": "Developer platform for version control and collaboration",
+		"baseUrl": "https://api.github.com"
+	},
+	"auth": {
+		"type": "bearer",
+		"envVar": "GITHUB_TOKEN",
+		"prefix": "Bearer"
+	},
+	"intents": [
+		{
+			"id": "create_issue",
+			"description": "Create a new issue in a repository",
+			"patterns": [
+				"create issue in {repo} titled {title}",
+				"open issue in {repo} {title}",
+				"new issue {repo} {title}"
+			],
+			"endpoint": { "method": "POST", "path": "/repos/{repo}/issues" },
+			"params": [
+				{
+					"name": "repo",
+					"type": "string",
+					"required": true,
+					"description": "Repository in owner/name format",
+					"in": "path",
+					"pattern": "^[\\w.-]+/[\\w.-]+$"
+				},
+				{
+					"name": "title",
+					"type": "string",
+					"required": true,
+					"description": "Issue title",
+					"in": "body"
+				},
+				{
+					"name": "body",
+					"type": "string",
+					"required": false,
+					"description": "Issue body/description",
+					"in": "body"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "GitHub Issue object",
+				"properties": {
+					"number": { "type": "number", "description": "Issue number" },
+					"html_url": { "type": "string", "description": "URL to the issue" }
+				}
+			}
+		},
+		{
+			"id": "list_repos",
+			"description": "List repositories for a user or organization",
+			"patterns": [
+				"list repos for {owner}",
+				"show repos for {owner}",
+				"get repos {owner}"
+			],
+			"endpoint": { "method": "GET", "path": "/users/{owner}/repos" },
+			"params": [
+				{
+					"name": "owner",
+					"type": "string",
+					"required": true,
+					"description": "GitHub username or org name",
+					"in": "path"
+				},
+				{
+					"name": "sort",
+					"type": "string",
+					"required": false,
+					"description": "Sort field: created, updated, pushed, full_name",
+					"in": "query",
+					"default": "updated"
+				}
+			],
+			"response": {
+				"type": "array",
+				"description": "List of repository objects"
+			}
+		},
+		{
+			"id": "create_pull_request",
+			"description": "Create a pull request",
+			"patterns": [
+				"create pr in {repo} from {head} to {base}",
+				"open pull request in {repo} from {head} to {base}",
+				"new pr {repo} {head} into {base}"
+			],
+			"endpoint": { "method": "POST", "path": "/repos/{repo}/pulls" },
+			"params": [
+				{
+					"name": "repo",
+					"type": "string",
+					"required": true,
+					"description": "Repository in owner/name format",
+					"in": "path",
+					"pattern": "^[\\w.-]+/[\\w.-]+$"
+				},
+				{
+					"name": "title",
+					"type": "string",
+					"required": false,
+					"description": "PR title",
+					"in": "body"
+				},
+				{
+					"name": "head",
+					"type": "string",
+					"required": true,
+					"description": "Branch to merge from",
+					"in": "body"
+				},
+				{
+					"name": "base",
+					"type": "string",
+					"required": true,
+					"description": "Branch to merge into",
+					"in": "body",
+					"default": "main"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "GitHub Pull Request object",
+				"properties": {
+					"number": { "type": "number", "description": "PR number" },
+					"html_url": { "type": "string", "description": "URL to the PR" }
+				}
+			}
+		},
+		{
+			"id": "get_user",
+			"description": "Get a GitHub user's profile",
+			"patterns": [
+				"get user {username}",
+				"look up user {username}",
+				"github user {username}"
+			],
+			"endpoint": { "method": "GET", "path": "/users/{username}" },
+			"params": [
+				{
+					"name": "username",
+					"type": "string",
+					"required": true,
+					"description": "GitHub username",
+					"in": "path"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "GitHub User object"
+			}
+		},
+		{
+			"id": "star_repo",
+			"description": "Star a repository",
+			"patterns": ["star {repo}", "star repo {repo}"],
+			"endpoint": { "method": "PUT", "path": "/user/starred/{repo}" },
+			"params": [
+				{
+					"name": "repo",
+					"type": "string",
+					"required": true,
+					"description": "Repository in owner/name format",
+					"in": "path",
+					"pattern": "^[\\w.-]+/[\\w.-]+$"
+				}
+			],
+			"response": {
+				"type": "string",
+				"description": "Empty response on success (204)"
+			}
+		}
+	]
+}

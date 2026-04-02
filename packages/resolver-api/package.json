@@ -1,0 +1,31 @@
+{
+	"name": "@agentgate/resolver-api",
+	"version": "0.1.0",
+	"description": "Hosted resolver API for AgentGate — DNS for agents",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"bin": {
+		"agentgate-serve": "./dist/server.js"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"scripts": {
+		"build": "tsc",
+		"test": "vitest run",
+		"dev": "tsx watch src/server.ts"
+	},
+	"dependencies": {
+		"hono": "^4.7.0",
+		"@hono/node-server": "^1.13.0",
+		"@agentgate/schema": "workspace:*",
+		"agentgate": "workspace:*"
+	},
+	"devDependencies": {
+		"@types/node": "^22.0.0"
+	}
+}

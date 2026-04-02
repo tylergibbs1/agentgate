@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.next/
+out/
+
+# Turbo
+.turbo/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Vault data (encrypted credentials — never commit)
+vault.json
+audit.log
+*.db
+*.sqlite
+
+# Crawler output
+index.json
+
+# Test artifacts
+coverage/
+
+# Lock files from other package managers
+package-lock.json
+yarn.lock
+bun.lock
+bun.lockb
+
+# Next.js
+next-env.d.ts
+
+# Debug
+*.log
+npm-debug.log*

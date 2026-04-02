@@ -1,0 +1,17 @@
+{
+	"name": "agentgate-monorepo",
+	"private": true,
+	"packageManager": "pnpm@10.6.5",
+	"scripts": {
+		"build": "turbo run build",
+		"test": "turbo run test",
+		"lint": "biome check packages specs",
+		"format": "biome format --write packages specs"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^1.9.0",
+		"turbo": "^2.4.0",
+		"typescript": "^5.7.0",
+		"vitest": "^3.1.0"
+	}
+}

@@ -1,0 +1,286 @@
+{
+	"version": "1.0",
+	"service": {
+		"name": "stripe",
+		"description": "Payment processing platform for internet businesses",
+		"baseUrl": "https://api.stripe.com"
+	},
+	"auth": {
+		"type": "bearer",
+		"envVar": "STRIPE_KEY",
+		"prefix": "Bearer"
+	},
+	"intents": [
+		{
+			"id": "create_charge",
+			"description": "Create a charge to bill a customer",
+			"patterns": [
+				"charge {customer} {amount}",
+				"charge {amount} to {customer}",
+				"bill {customer} {amount}"
+			],
+			"endpoint": { "method": "POST", "path": "/v1/charges" },
+			"params": [
+				{
+					"name": "customer",
+					"type": "string",
+					"required": true,
+					"description": "Stripe customer ID (cus_...)",
+					"in": "body",
+					"pattern": "^cus_"
+				},
+				{
+					"name": "amount",
+					"type": "number",
+					"required": true,
+					"description": "Amount in dollars (converted to cents)",
+					"in": "body",
+					"transform": "cents"
+				},
+				{
+					"name": "currency",
+					"type": "string",
+					"required": false,
+					"description": "Three-letter currency code",
+					"in": "body",
+					"default": "usd"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Stripe Charge object",
+				"properties": {
+					"id": { "type": "string", "description": "Charge ID" },
+					"amount": { "type": "number", "description": "Amount in cents" },
+					"status": { "type": "string", "description": "Charge status" }
+				}
+			}
+		},
+		{
+			"id": "create_customer",
+			"description": "Create a new Stripe customer",
+			"patterns": [
+				"create customer {email}",
+				"add customer {email}",
+				"new customer {email}"
+			],
+			"endpoint": { "method": "POST", "path": "/v1/customers" },
+			"params": [
+				{
+					"name": "email",
+					"type": "string",
+					"required": true,
+					"description": "Customer email address",
+					"in": "body"
+				},
+				{
+					"name": "name",
+					"type": "string",
+					"required": false,
+					"description": "Customer name",
+					"in": "body"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Stripe Customer object",
+				"properties": {
+					"id": { "type": "string", "description": "Customer ID (cus_...)" },
+					"email": { "type": "string", "description": "Customer email" }
+				}
+			}
+		},
+		{
+			"id": "get_customer",
+			"description": "Retrieve a customer by ID",
+			"patterns": [
+				"get customer {customer}",
+				"retrieve customer {customer}",
+				"look up customer {customer}"
+			],
+			"endpoint": { "method": "GET", "path": "/v1/customers/{customer}" },
+			"params": [
+				{
+					"name": "customer",
+					"type": "string",
+					"required": true,
+					"description": "Stripe customer ID",
+					"in": "path",
+					"pattern": "^cus_"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Stripe Customer object"
+			}
+		},
+		{
+			"id": "create_payment_intent",
+			"description": "Create a payment intent for collecting a payment",
+			"patterns": [
+				"create payment intent for {amount}",
+				"payment intent {amount}",
+				"collect {amount} from {customer}"
+			],
+			"endpoint": { "method": "POST", "path": "/v1/payment_intents" },
+			"params": [
+				{
+					"name": "amount",
+					"type": "number",
+					"required": true,
+					"description": "Amount in dollars (converted to cents)",
+					"in": "body",
+					"transform": "cents"
+				},
+				{
+					"name": "customer",
+					"type": "string",
+					"required": false,
+					"description": "Stripe customer ID",
+					"in": "body",
+					"pattern": "^cus_"
+				},
+				{
+					"name": "currency",
+					"type": "string",
+					"required": false,
+					"description": "Three-letter currency code",
+					"in": "body",
+					"default": "usd"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Stripe PaymentIntent object",
+				"properties": {
+					"id": { "type": "string", "description": "PaymentIntent ID" },
+					"client_secret": {
+						"type": "string",
+						"description": "Client secret for frontend"
+					},
+					"status": { "type": "string", "description": "PaymentIntent status" }
+				}
+			}
+		},
+		{
+			"id": "list_charges",
+			"description": "List recent charges",
+			"patterns": [
+				"list charges",
+				"show charges",
+				"get charges for {customer}"
+			],
+			"endpoint": { "method": "GET", "path": "/v1/charges" },
+			"params": [
+				{
+					"name": "customer",
+					"type": "string",
+					"required": false,
+					"description": "Filter by customer ID",
+					"in": "query",
+					"pattern": "^cus_"
+				},
+				{
+					"name": "limit",
+					"type": "number",
+					"required": false,
+					"description": "Number of charges to return",
+					"in": "query",
+					"default": 10
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "List of Stripe Charge objects"
+			}
+		},
+		{
+			"id": "create_refund",
+			"description": "Refund a charge",
+			"patterns": [
+				"refund charge {charge}",
+				"refund {charge}",
+				"issue refund for {charge}"
+			],
+			"endpoint": { "method": "POST", "path": "/v1/refunds" },
+			"params": [
+				{
+					"name": "charge",
+					"type": "string",
+					"required": true,
+					"description": "Charge ID to refund",
+					"in": "body",
+					"pattern": "^ch_"
+				},
+				{
+					"name": "amount",
+					"type": "number",
+					"required": false,
+					"description": "Partial refund amount in dollars (converted to cents)",
+					"in": "body",
+					"transform": "cents"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Stripe Refund object"
+			}
+		},
+		{
+			"id": "create_subscription",
+			"description": "Subscribe a customer to a recurring plan",
+			"patterns": [
+				"subscribe {customer} to {price}",
+				"create subscription for {customer} with {price}"
+			],
+			"endpoint": { "method": "POST", "path": "/v1/subscriptions" },
+			"params": [
+				{
+					"name": "customer",
+					"type": "string",
+					"required": true,
+					"description": "Stripe customer ID",
+					"in": "body",
+					"pattern": "^cus_"
+				},
+				{
+					"name": "price",
+					"type": "string",
+					"required": true,
+					"description": "Stripe price ID",
+					"in": "body",
+					"pattern": "^price_"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Stripe Subscription object",
+				"properties": {
+					"id": { "type": "string", "description": "Subscription ID" },
+					"status": { "type": "string", "description": "Subscription status" }
+				}
+			}
+		},
+		{
+			"id": "get_balance",
+			"description": "Retrieve the current account balance",
+			"patterns": ["get balance", "show balance", "check balance"],
+			"endpoint": { "method": "GET", "path": "/v1/balance" },
+			"params": [],
+			"response": {
+				"type": "object",
+				"description": "Stripe Balance object",
+				"properties": {
+					"available": {
+						"type": "array",
+						"description": "Available balance by currency"
+					},
+					"pending": {
+						"type": "array",
+						"description": "Pending balance by currency"
+					}
+				}
+			}
+		}
+	]
+}
