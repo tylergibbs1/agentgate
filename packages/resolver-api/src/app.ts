@@ -1,5 +1,5 @@
-import type { AgentSpec } from "@agentgate/schema";
-import { LocalResolver } from "agentgate";
+import type { AgentSpec } from "@grayhaven/agentgate-schema";
+import { LocalResolver } from "@grayhaven/agentgate";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 

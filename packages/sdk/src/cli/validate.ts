@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { validateSpec } from "@agentgate/schema";
+import { validateSpec } from "@grayhaven/agentgate-schema";
 
 export function runValidate(filePath: string): void {
 	let raw: string;

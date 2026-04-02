@@ -1,4 +1,4 @@
-import type { AgentSpec } from "@agentgate/schema";
+import type { AgentSpec } from "@grayhaven/agentgate-schema";
 import { afterEach, describe, expect, it } from "vitest";
 import { AuthError } from "../errors.js";
 import { EnvAuthProvider } from "./env.js";

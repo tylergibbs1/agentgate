@@ -1,4 +1,4 @@
-import type { AgentSpec } from "@agentgate/schema";
+import type { AgentSpec } from "@grayhaven/agentgate-schema";
 import { AgentGateError, ResolutionError } from "../errors.js";
 import { Gate } from "../gate.js";
 import type { DryRunResult, GateResult } from "../gate.js";

@@ -1,4 +1,4 @@
-import type { AgentSpec } from "@agentgate/schema";
+import type { AgentSpec } from "@grayhaven/agentgate-schema";
 import type { Vault } from "./vault.js";
 
 export interface AuthHeader {

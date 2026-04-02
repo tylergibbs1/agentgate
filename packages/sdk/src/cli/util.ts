@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
-import type { AgentSpec } from "@agentgate/schema";
-import { validateSpec } from "@agentgate/schema";
+import type { AgentSpec } from "@grayhaven/agentgate-schema";
+import { validateSpec } from "@grayhaven/agentgate-schema";
 
 /**
  * Load all agents.json spec files from a directory.

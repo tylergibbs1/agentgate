@@ -1,0 +1,184 @@
+{
+	"version": "1.0",
+	"service": {
+		"name": "twilio",
+		"description": "Cloud communications platform for SMS, voice, and messaging",
+		"baseUrl": "https://api.twilio.com/2010-04-01"
+	},
+	"auth": {
+		"type": "api_key",
+		"envVar": "TWILIO_AUTH_TOKEN",
+		"header": "Authorization",
+		"prefix": "Basic"
+	},
+	"intents": [
+		{
+			"id": "send_sms",
+			"description": "Send an SMS text message",
+			"patterns": [
+				"send sms to {to} saying {body}",
+				"text {to} {body}",
+				"send message to {to}"
+			],
+			"endpoint": {
+				"method": "POST",
+				"path": "/Accounts/{accountSid}/Messages.json"
+			},
+			"params": [
+				{
+					"name": "accountSid",
+					"type": "string",
+					"required": true,
+					"description": "Twilio Account SID",
+					"in": "path",
+					"pattern": "^AC"
+				},
+				{
+					"name": "To",
+					"type": "string",
+					"required": true,
+					"description": "Recipient phone number in E.164 format",
+					"in": "body",
+					"pattern": "^\\+"
+				},
+				{
+					"name": "From",
+					"type": "string",
+					"required": false,
+					"description": "Sender phone number",
+					"in": "body"
+				},
+				{
+					"name": "Body",
+					"type": "string",
+					"required": true,
+					"description": "Message body text",
+					"in": "body"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Twilio Message resource",
+				"properties": {
+					"sid": { "type": "string", "description": "Message SID" },
+					"status": { "type": "string", "description": "Message status" }
+				}
+			}
+		},
+		{
+			"id": "make_call",
+			"description": "Initiate a phone call",
+			"patterns": ["call {to}", "make call to {to}", "phone {to}"],
+			"endpoint": {
+				"method": "POST",
+				"path": "/Accounts/{accountSid}/Calls.json"
+			},
+			"params": [
+				{
+					"name": "accountSid",
+					"type": "string",
+					"required": true,
+					"description": "Twilio Account SID",
+					"in": "path",
+					"pattern": "^AC"
+				},
+				{
+					"name": "To",
+					"type": "string",
+					"required": true,
+					"description": "Phone number to call",
+					"in": "body",
+					"pattern": "^\\+"
+				},
+				{
+					"name": "From",
+					"type": "string",
+					"required": false,
+					"description": "Caller phone number",
+					"in": "body"
+				},
+				{
+					"name": "Url",
+					"type": "string",
+					"required": false,
+					"description": "TwiML URL for call instructions",
+					"in": "body"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Twilio Call resource",
+				"properties": {
+					"sid": { "type": "string", "description": "Call SID" },
+					"status": { "type": "string", "description": "Call status" }
+				}
+			}
+		},
+		{
+			"id": "get_message",
+			"description": "Get the status of a sent message",
+			"patterns": [
+				"get message {sid}",
+				"check message status {sid}",
+				"message status {sid}"
+			],
+			"endpoint": {
+				"method": "GET",
+				"path": "/Accounts/{accountSid}/Messages/{sid}.json"
+			},
+			"params": [
+				{
+					"name": "accountSid",
+					"type": "string",
+					"required": true,
+					"description": "Twilio Account SID",
+					"in": "path",
+					"pattern": "^AC"
+				},
+				{
+					"name": "sid",
+					"type": "string",
+					"required": true,
+					"description": "Message SID",
+					"in": "path",
+					"pattern": "^SM"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Twilio Message resource"
+			}
+		},
+		{
+			"id": "list_messages",
+			"description": "List sent and received messages",
+			"patterns": ["list messages", "show messages", "get messages"],
+			"endpoint": {
+				"method": "GET",
+				"path": "/Accounts/{accountSid}/Messages.json"
+			},
+			"params": [
+				{
+					"name": "accountSid",
+					"type": "string",
+					"required": true,
+					"description": "Twilio Account SID",
+					"in": "path",
+					"pattern": "^AC"
+				},
+				{
+					"name": "PageSize",
+					"type": "number",
+					"required": false,
+					"description": "Number of messages to return",
+					"in": "query",
+					"default": 20
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "List of Twilio Message resources"
+			}
+		}
+	]
+}

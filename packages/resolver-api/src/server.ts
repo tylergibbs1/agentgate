@@ -2,8 +2,8 @@
 
 import { readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
-import type { AgentSpec } from "@agentgate/schema";
-import { validateSpec } from "@agentgate/schema";
+import type { AgentSpec } from "@grayhaven/agentgate-schema";
+import { validateSpec } from "@grayhaven/agentgate-schema";
 import { serve } from "@hono/node-server";
 import { createApp } from "./app.js";
 

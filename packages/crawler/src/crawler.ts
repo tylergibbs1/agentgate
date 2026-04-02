@@ -1,4 +1,4 @@
-import { validateSpec } from "@agentgate/schema";
+import { validateSpec } from "@grayhaven/agentgate-schema";
 import type {
 	CrawlResult,
 	CrawlTarget,

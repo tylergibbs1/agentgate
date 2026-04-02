@@ -1,4 +1,4 @@
-import type { AgentSpec } from "@agentgate/schema";
+import type { AgentSpec } from "@grayhaven/agentgate-schema";
 
 export function runList(specs: AgentSpec[]): void {
 	if (specs.length === 0) {

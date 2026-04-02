@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import type { AgentSpec } from "@agentgate/schema";
-import type { IntentParam } from "@agentgate/schema";
+import type { AgentSpec } from "@grayhaven/agentgate-schema";
+import type { IntentParam } from "@grayhaven/agentgate-schema";
 import { describe, expect, it } from "vitest";
 import { LocalResolver } from "./local.js";
 import { compilePattern, matchPattern } from "./match.js";

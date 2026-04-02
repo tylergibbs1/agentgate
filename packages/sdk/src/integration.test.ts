@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from "node:fs";
 import { join } from "node:path";
-import type { AgentSpec } from "@agentgate/schema";
-import { validateSpec } from "@agentgate/schema";
+import type { AgentSpec } from "@grayhaven/agentgate-schema";
+import { validateSpec } from "@grayhaven/agentgate-schema";
 import { describe, expect, it } from "vitest";
 import { Gate } from "./gate.js";
 import type { DryRunResult } from "./gate.js";

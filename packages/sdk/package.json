@@ -1,5 +1,5 @@
 {
-	"name": "agentgate",
+	"name": "@grayhaven/agentgate",
 	"version": "0.1.0",
 	"description": "AgentGate SDK — resolve natural language intents to API calls",
 	"license": "MIT",
@@ -24,7 +24,7 @@
 		"prepublishOnly": "cp -r ../../specs ./specs"
 	},
 	"dependencies": {
-		"@agentgate/schema": "^0.1.0"
+		"@grayhaven/agentgate-schema": "^0.1.0"
 	},
 	"devDependencies": {
 		"@types/node": "^22.0.0"

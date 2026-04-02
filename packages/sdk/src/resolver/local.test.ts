@@ -1,4 +1,4 @@
-import type { AgentSpec } from "@agentgate/schema";
+import type { AgentSpec } from "@grayhaven/agentgate-schema";
 import { describe, expect, it } from "vitest";
 import { LocalResolver } from "./local.js";
 

@@ -1,4 +1,4 @@
-import type { AgentSpec } from "@agentgate/schema";
+import type { AgentSpec } from "@grayhaven/agentgate-schema";
 import { describe, expect, it, vi } from "vitest";
 import { AuthError, ResolutionError } from "./errors.js";
 import { Gate } from "./gate.js";

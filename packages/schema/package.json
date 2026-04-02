@@ -1,5 +1,5 @@
 {
-	"name": "@agentgate/schema",
+	"name": "@grayhaven/agentgate-schema",
 	"version": "0.1.0",
 	"description": "AgentGate agents.json schema types and validator",
 	"license": "MIT",

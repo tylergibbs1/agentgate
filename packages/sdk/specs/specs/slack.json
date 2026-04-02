@@ -1,0 +1,98 @@
+{
+	"version": "1.0",
+	"service": {
+		"name": "slack",
+		"description": "Slack Web API for messaging and workspace management",
+		"baseUrl": "https://slack.com/api"
+	},
+	"auth": {
+		"type": "bearer",
+		"envVar": "SLACK_TOKEN",
+		"prefix": "Bearer"
+	},
+	"intents": [
+		{
+			"id": "send_message",
+			"description": "Send a message to a Slack channel",
+			"patterns": [
+				"send message {text} to channel {channel}",
+				"post {text} in slack channel {channel}",
+				"message slack channel {channel} with {text}"
+			],
+			"endpoint": { "method": "POST", "path": "/chat.postMessage" },
+			"params": [
+				{
+					"name": "channel",
+					"type": "string",
+					"required": true,
+					"description": "Channel ID or name to send the message to",
+					"in": "body"
+				},
+				{
+					"name": "text",
+					"type": "string",
+					"required": true,
+					"description": "The message text to send",
+					"in": "body"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Message post confirmation with channel, timestamp, and message details"
+			}
+		},
+		{
+			"id": "list_channels",
+			"description": "List channels in the Slack workspace",
+			"patterns": [
+				"list slack channels",
+				"show all channels",
+				"get slack channels"
+			],
+			"endpoint": { "method": "GET", "path": "/conversations.list" },
+			"params": [
+				{
+					"name": "limit",
+					"type": "number",
+					"required": false,
+					"description": "Maximum number of channels to return (default 100, max 1000)",
+					"in": "query"
+				},
+				{
+					"name": "types",
+					"type": "string",
+					"required": false,
+					"description": "Comma-separated list of channel types (public_channel, private_channel, mpim, im)",
+					"in": "query"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "List of channels with metadata"
+			}
+		},
+		{
+			"id": "list_users",
+			"description": "List users in the Slack workspace",
+			"patterns": [
+				"list slack users",
+				"show all slack members",
+				"get workspace users"
+			],
+			"endpoint": { "method": "GET", "path": "/users.list" },
+			"params": [
+				{
+					"name": "limit",
+					"type": "number",
+					"required": false,
+					"description": "Maximum number of users to return (default 0 for no limit)",
+					"in": "query"
+				}
+			],
+			"response": {
+				"type": "array",
+				"description": "List of user objects with profile information"
+			}
+		}
+	]
+}

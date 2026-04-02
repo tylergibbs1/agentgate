@@ -16,7 +16,7 @@
 		"test": "vitest run"
 	},
 	"dependencies": {
-		"@agentgate/schema": "workspace:*"
+		"@grayhaven/agentgate-schema": "workspace:*"
 	},
 	"devDependencies": {
 		"@types/node": "^22.0.0"

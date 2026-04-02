@@ -1,4 +1,4 @@
-import type { AgentSpec } from "@agentgate/schema";
+import type { AgentSpec } from "@grayhaven/agentgate-schema";
 import { LocalResolver } from "../resolver/local.js";
 
 export function runDiscover(query: string, specs: AgentSpec[]): void {

@@ -1,4 +1,4 @@
-import type { AgentSpec, Intent } from "@agentgate/schema";
+import type { AgentSpec, Intent } from "@grayhaven/agentgate-schema";
 import { compilePattern, matchPattern } from "./match.js";
 import type { DiscoveryResult, ResolvedIntent, Resolver } from "./types.js";
 

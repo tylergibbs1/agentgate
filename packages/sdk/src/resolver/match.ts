@@ -1,4 +1,4 @@
-import type { IntentParam } from "@agentgate/schema";
+import type { IntentParam } from "@grayhaven/agentgate-schema";
 
 interface CompiledPattern {
 	regex: RegExp;

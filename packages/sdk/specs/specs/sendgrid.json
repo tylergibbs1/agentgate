@@ -1,0 +1,74 @@
+{
+	"version": "1.0",
+	"service": {
+		"name": "sendgrid",
+		"description": "SendGrid v3 API for email delivery and contact management",
+		"baseUrl": "https://api.sendgrid.com"
+	},
+	"auth": {
+		"type": "bearer",
+		"envVar": "SENDGRID_KEY",
+		"prefix": "Bearer"
+	},
+	"intents": [
+		{
+			"id": "send_email",
+			"description": "Send an email via SendGrid",
+			"patterns": [
+				"send email to {to} with subject {subject}",
+				"email {to} about {subject} via sendgrid",
+				"send sendgrid email to {to}"
+			],
+			"endpoint": { "method": "POST", "path": "/v3/mail/send" },
+			"params": [
+				{
+					"name": "to",
+					"type": "string",
+					"required": true,
+					"description": "Recipient email address",
+					"in": "body"
+				},
+				{
+					"name": "from",
+					"type": "string",
+					"required": true,
+					"description": "Sender email address",
+					"in": "body"
+				},
+				{
+					"name": "subject",
+					"type": "string",
+					"required": true,
+					"description": "Email subject line",
+					"in": "body"
+				},
+				{
+					"name": "content",
+					"type": "string",
+					"required": true,
+					"description": "The email body content (plain text or HTML)",
+					"in": "body"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Empty response with 202 status on success"
+			}
+		},
+		{
+			"id": "list_contacts",
+			"description": "List all contacts in SendGrid Marketing",
+			"patterns": [
+				"list sendgrid contacts",
+				"show all contacts",
+				"get sendgrid contact list"
+			],
+			"endpoint": { "method": "GET", "path": "/v3/marketing/contacts" },
+			"params": [],
+			"response": {
+				"type": "object",
+				"description": "Contact list with email, name, and custom fields"
+			}
+		}
+	]
+}

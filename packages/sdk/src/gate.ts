@@ -1,4 +1,4 @@
-import type { AgentSpec } from "@agentgate/schema";
+import type { AgentSpec } from "@grayhaven/agentgate-schema";
 import { EnvAuthProvider } from "./auth/env.js";
 import type { AuthProvider } from "./auth/types.js";
 import { ResolutionError, ValidationError } from "./errors.js";

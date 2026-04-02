@@ -22,8 +22,8 @@
 	"dependencies": {
 		"hono": "^4.7.0",
 		"@hono/node-server": "^1.13.0",
-		"@agentgate/schema": "workspace:*",
-		"agentgate": "workspace:*"
+		"@grayhaven/agentgate-schema": "workspace:*",
+		"@grayhaven/agentgate": "workspace:*"
 	},
 	"devDependencies": {
 		"@types/node": "^22.0.0"

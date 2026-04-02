@@ -1,4 +1,4 @@
-import type { AgentSpec } from "@agentgate/schema";
+import type { AgentSpec } from "@grayhaven/agentgate-schema";
 import { AuthError } from "../errors.js";
 import type { AuthHeader, AuthProvider } from "./types.js";
 

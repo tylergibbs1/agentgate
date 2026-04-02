@@ -1,4 +1,4 @@
-import type { IntentParam } from "@agentgate/schema";
+import type { IntentParam } from "@grayhaven/agentgate-schema";
 import { describe, expect, it } from "vitest";
 import { compilePattern, matchPattern } from "./match.js";
 

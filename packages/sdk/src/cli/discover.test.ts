@@ -1,4 +1,4 @@
-import type { AgentSpec } from "@agentgate/schema";
+import type { AgentSpec } from "@grayhaven/agentgate-schema";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { runDiscover } from "./discover.js";
 
