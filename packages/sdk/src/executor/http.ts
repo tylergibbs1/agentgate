@@ -9,9 +9,11 @@ export class HttpExecutor implements Executor {
 		auth: AuthHeader | null,
 	): Promise<ExecutionResult> {
 		const { method, url } = resolved.endpoint;
+		const isFormEncoded =
+			resolved.contentType === "application/x-www-form-urlencoded";
 
 		const headers: Record<string, string> = {
-			"Content-Type": "application/json",
+			"Content-Type": resolved.contentType ?? "application/json",
 		};
 		if (auth) {
 			headers[auth.name] = auth.value;
@@ -22,9 +24,18 @@ export class HttpExecutor implements Executor {
 		let body: string | undefined;
 
 		if (hasBody) {
-			body = JSON.stringify(resolved.params);
+			if (isFormEncoded) {
+				const formParams = new URLSearchParams();
+				for (const [key, value] of Object.entries(resolved.params)) {
+					if (value !== undefined && value !== null) {
+						formParams.set(key, String(value));
+					}
+				}
+				body = formParams.toString();
+			} else {
+				body = JSON.stringify(resolved.params);
+			}
 		} else {
-			// Append params as query string
 			const queryParams = new URLSearchParams();
 			for (const [key, value] of Object.entries(resolved.params)) {
 				queryParams.set(key, String(value));

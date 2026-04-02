@@ -7,6 +7,7 @@ export interface ResolvedIntent {
 	confidence: number;
 	alternatives: ResolvedIntent[];
 	authRequired: boolean;
+	contentType: "application/json" | "application/x-www-form-urlencoded";
 }
 
 export interface DiscoveryResult {

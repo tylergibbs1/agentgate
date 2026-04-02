@@ -9,6 +9,7 @@ export interface ServiceInfo {
 	name: string;
 	description: string;
 	baseUrl: string;
+	contentType?: "application/json" | "application/x-www-form-urlencoded";
 }
 
 export interface AuthConfig {

@@ -93,7 +93,7 @@ export class LocalResolver implements Resolver {
 			}
 		}
 
-		// Build the full URL
+		// Build the full URL and remove path params from the params dict
 		let path = entry.intent.endpoint.path;
 		for (const paramDef of entry.intent.params) {
 			if (paramDef.in === "path" && paramDef.name in bestMatch.params) {
@@ -101,6 +101,7 @@ export class LocalResolver implements Resolver {
 					`{${paramDef.name}}`,
 					String(bestMatch.params[paramDef.name]),
 				);
+				delete bestMatch.params[paramDef.name];
 			}
 		}
 
@@ -122,6 +123,7 @@ export class LocalResolver implements Resolver {
 			confidence: bestMatch.confidence,
 			alternatives: [],
 			authRequired,
+			contentType: entry.spec.service.contentType ?? "application/json",
 		};
 	}
 

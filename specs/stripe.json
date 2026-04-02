@@ -3,7 +3,8 @@
 	"service": {
 		"name": "stripe",
 		"description": "Payment processing platform for internet businesses",
-		"baseUrl": "https://api.stripe.com"
+		"baseUrl": "https://api.stripe.com",
+		"contentType": "application/x-www-form-urlencoded"
 	},
 	"auth": {
 		"type": "bearer",

@@ -14,6 +14,10 @@ export const agentSpecSchema = {
 				name: { type: "string", minLength: 1 },
 				description: { type: "string", minLength: 1 },
 				baseUrl: { type: "string", minLength: 1, pattern: "^https?://" },
+				contentType: {
+					type: "string",
+					enum: ["application/json", "application/x-www-form-urlencoded"],
+				},
 			},
 		},
 		auth: {
