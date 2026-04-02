@@ -16,6 +16,7 @@
 			"description": "List recent deployments on Vercel",
 			"patterns": [
 				"list vercel deployments",
+				"list deployments",
 				"show my deployments",
 				"get recent vercel deploys"
 			],

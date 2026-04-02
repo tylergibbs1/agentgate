@@ -1,0 +1,4 @@
+commit	accuracy	avg_ms	total_correct	failures	status	description
+baseline	89.6	0.058	43/48	5	keep	baseline - no changes
+baseline	89.6	0.058	43/48	5	discard	exp1: service name boost (+0.15 when input contains service name) — no improvement, same failures
+exp2	100.0	0.074	48/48	0	keep	strict/loose regex split + service name boost + specificity tiebreaker (uncapped)

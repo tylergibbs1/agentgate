@@ -83,6 +83,13 @@ export class LocalResolver implements Resolver {
 
 		if (!bestMatch) return null;
 
+		// Boost confidence when input mentions the service name
+		const inputLower = input.toLowerCase();
+		const serviceName = entry.spec.service.name.toLowerCase();
+		if (inputLower.includes(serviceName)) {
+			bestMatch.confidence = Math.min(1, bestMatch.confidence + 0.2);
+		}
+
 		// Fill in defaults for missing required params
 		for (const paramDef of entry.intent.params) {
 			if (

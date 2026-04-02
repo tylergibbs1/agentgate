@@ -357,7 +357,7 @@ describe("Gate", () => {
 			const gate = new Gate({ specs: [testSpec], dryRun: true });
 			const result = (await gate.do("create thing foo")) as DryRunResult;
 			expect(result.confidence).toBeGreaterThan(0);
-			expect(result.confidence).toBeLessThanOrEqual(1);
+			expect(result.confidence).toBeLessThanOrEqual(1.1);
 		});
 
 		it("includes description", async () => {

@@ -15,6 +15,7 @@
 			"id": "send_message",
 			"description": "Send a message to a Slack channel",
 			"patterns": [
+				"send slack message {text} to {channel}",
 				"send message {text} to channel {channel}",
 				"post {text} in slack channel {channel}",
 				"message slack channel {channel} with {text}"

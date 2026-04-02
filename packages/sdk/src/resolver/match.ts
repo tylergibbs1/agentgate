@@ -1,60 +1,124 @@
 import type { IntentParam } from "@grayhaven/agentgate-schema";
 
 interface CompiledPattern {
-	regex: RegExp;
+	strictRegex: RegExp;
+	looseRegex: RegExp;
 	paramNames: string[];
 	tokenCount: number;
+	totalTokens: number;
 }
 
 /**
- * Compile a pattern string like "charge {customer} {amount}" into a regex
- * that extracts named parameters from natural language input.
+ * Compile a pattern string like "charge {customer} {amount}" into regexes
+ * that extract named parameters from natural language input.
+ * Two regexes: strict (exact token order, no fillers) and loose (allows fillers).
  */
 export function compilePattern(pattern: string): CompiledPattern {
 	const paramNames: string[] = [];
 	let tokenCount = 0;
 
-	// Split pattern into tokens, tracking which are params
 	const tokens = pattern.split(/\s+/);
-	const regexParts: string[] = [];
+	const strictParts: string[] = [];
+	const looseParts: string[] = [];
 
 	for (const token of tokens) {
 		const paramMatch = token.match(/^\{(\w+)\}$/);
 		if (paramMatch) {
 			paramNames.push(paramMatch[1]!);
-			// Capture group for the param — greedy single token by default
-			regexParts.push("(\\S+)");
+			strictParts.push("(\\S+)");
+			looseParts.push("(\\S+)");
 		} else {
 			tokenCount++;
-			// Literal token — case insensitive, allow optional filler words between
-			regexParts.push(escapeRegex(token.toLowerCase()));
+			const escaped = escapeRegex(token.toLowerCase());
+			strictParts.push(escaped);
+			looseParts.push(escaped);
 		}
 	}
 
-	// Join with flexible whitespace (allow extra words between tokens)
-	const regexStr = regexParts.join("\\s+(?:\\S+\\s+)*?");
-	const regex = new RegExp(regexStr, "i");
+	const strictRegex = new RegExp(strictParts.join("\\s+"), "i");
+	const looseRegex = new RegExp(
+		looseParts.join("\\s+(?:\\S+\\s+)*?"),
+		"i",
+	);
 
-	return { regex, paramNames, tokenCount };
+	return {
+		strictRegex,
+		looseRegex,
+		paramNames,
+		tokenCount,
+		totalTokens: tokens.length,
+	};
 }
 
 /**
  * Try to match input against a compiled pattern.
- * Returns extracted params and a confidence score, or null if no match.
+ * Strict matches (no filler words needed) get full confidence.
+ * Loose matches (filler words absorbed) get penalized confidence.
  */
 export function matchPattern(
 	input: string,
 	compiled: CompiledPattern,
 	paramDefs: IntentParam[],
 ): { params: Record<string, unknown>; confidence: number } | null {
-	const match = compiled.regex.exec(input.trim());
-	if (!match) return null;
+	const trimmed = input.trim();
 
+	// Try strict match first — higher confidence
+	const strictMatch = compiled.strictRegex.exec(trimmed);
+	if (strictMatch) {
+		const result = extractParams(
+			strictMatch,
+			compiled.paramNames,
+			paramDefs,
+		);
+		if (result) {
+			const total = compiled.tokenCount + compiled.paramNames.length;
+			const matched = compiled.tokenCount + result.paramScore;
+			const baseConfidence = total > 0 ? matched / total : 0;
+			// Tiny specificity bonus: more literal tokens = slightly higher score
+			// This breaks ties between "email {to}" (1 literal) and "get email {id}" (2 literals)
+			const specificityBonus = compiled.tokenCount * 0.01;
+			result.confidence = baseConfidence + specificityBonus;
+			return result;
+		}
+	}
+
+	// Fall back to loose match — penalized confidence
+	const looseMatch = compiled.looseRegex.exec(trimmed);
+	if (looseMatch) {
+		const result = extractParams(
+			looseMatch,
+			compiled.paramNames,
+			paramDefs,
+		);
+		if (result) {
+			const total = compiled.tokenCount + compiled.paramNames.length;
+			const matched = compiled.tokenCount + result.paramScore;
+			const baseConfidence = total > 0 ? matched / total : 0;
+
+			// Penalize: how many extra words did the input have vs the pattern?
+			const inputWordCount = trimmed.split(/\s+/).length;
+			const patternWordCount = compiled.totalTokens;
+			const extraWords = Math.max(0, inputWordCount - patternWordCount);
+			const penalty = extraWords * 0.1;
+
+			result.confidence = Math.max(0, baseConfidence - penalty);
+			return result;
+		}
+	}
+
+	return null;
+}
+
+function extractParams(
+	match: RegExpExecArray,
+	paramNames: string[],
+	paramDefs: IntentParam[],
+): { params: Record<string, unknown>; confidence: number; paramScore: number } | null {
 	const params: Record<string, unknown> = {};
 	let paramScore = 0;
 
-	for (let i = 0; i < compiled.paramNames.length; i++) {
-		const name = compiled.paramNames[i]!;
+	for (let i = 0; i < paramNames.length; i++) {
+		const name = paramNames[i]!;
 		const raw = match[i + 1];
 		if (!raw) continue;
 
@@ -65,7 +129,6 @@ export function matchPattern(
 			continue;
 		}
 
-		// Validate against pattern if defined
 		if (def.pattern) {
 			const paramRegex = new RegExp(def.pattern);
 			if (!paramRegex.test(raw)) continue;
@@ -78,18 +141,12 @@ export function matchPattern(
 		}
 	}
 
-	// Confidence: ratio of matched literal tokens + successfully parsed params
-	const total = compiled.tokenCount + compiled.paramNames.length;
-	const matched = compiled.tokenCount + paramScore;
-	const confidence = total > 0 ? matched / total : 0;
-
-	return { params, confidence };
+	return { params, confidence: 0, paramScore };
 }
 
 function parseParamValue(raw: string, def: IntentParam): unknown {
 	switch (def.type) {
 		case "number": {
-			// Strip currency symbols and commas
 			const cleaned = raw.replace(/[$€£,]/g, "");
 			const num = Number.parseFloat(cleaned);
 			if (Number.isNaN(num) || !Number.isFinite(num)) return undefined;

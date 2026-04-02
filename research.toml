@@ -1,0 +1,31 @@
+# research.toml — auto-research configuration for AgentGate resolver
+
+tag = "resolver-accuracy"
+
+modifiable_files = [
+  "packages/sdk/src/resolver/match.ts",
+  "packages/sdk/src/resolver/local.ts",
+]
+
+readonly_files = [
+  "packages/sdk/src/resolver/types.ts",
+  "packages/sdk/src/resolver/battle.test.ts",
+  "packages/sdk/src/resolver/local.test.ts",
+  "packages/sdk/src/resolver/match.test.ts",
+  "specs/stripe.json",
+  "specs/resend.json",
+  "specs/github.json",
+  "bench.ts",
+]
+
+run_command = "cd packages/sdk && bun run build && cd ../.. && bun run bench.ts"
+
+metric_grep = "^accuracy:"
+metric_name = "accuracy"
+metric_direction = "higher"
+
+secondary_metrics = ["^avg_ms:", "^total_correct:", "^failures:"]
+
+timeout_seconds = 30
+
+no_new_dependencies = true

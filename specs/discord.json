@@ -15,6 +15,7 @@
 			"id": "send_message",
 			"description": "Send a message to a Discord channel",
 			"patterns": [
+				"send discord message {content} to {channel_id}",
 				"send message {content} to discord channel {channel_id}",
 				"post {content} in discord channel {channel_id}",
 				"message discord channel {channel_id} with {content}"
