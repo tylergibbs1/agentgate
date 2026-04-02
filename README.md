@@ -3,7 +3,7 @@
 DNS for the agent era. A protocol + SDK that lets AI agents discover and call internet APIs via natural language intents.
 
 ```typescript
-import { Gate } from 'agentgate'
+import { Gate } from '@grayhaven/agentgate'
 
 const gate = new Gate({ specs })
 
@@ -29,13 +29,20 @@ API providers publish an `agents.json` spec file describing their capabilities a
 
 | Package | Description |
 |---|---|
-| `@agentgate/schema` | `agents.json` JSON Schema spec + validator |
-| `agentgate` | SDK + CLI — Gate class, resolvers, executor |
+| `@grayhaven/agentgate-schema` | `agents.json` JSON Schema spec + validator |
+| `@grayhaven/agentgate` | SDK + CLI — Gate class, resolvers, executor |
+| `@grayhaven/agentgate-mcp` | MCP server — expose all APIs as tools for Claude, Cursor, etc. |
+| `@grayhaven/agentgate-openapi` | Convert OpenAPI specs to agents.json |
 | `@agentgate/analytics` | SQLite event tracking and query aggregations |
 | `@agentgate/vault` | AES-256-GCM encrypted credential storage |
 | `@agentgate/crawler` | Discover and index `agents.json` from the web |
 | `@agentgate/resolver-api` | Hono HTTP server for remote intent resolution |
-| `@agentgate/registry` | Next.js static site for browsing APIs |
+
+## Install
+
+```bash
+bun add @grayhaven/agentgate
+```
 
 ## Quick start
 
@@ -44,6 +51,44 @@ git clone https://github.com/tylergibbs1/agentgate
 cd agentgate
 bun install
 bun run build
+```
+
+### MCP Server
+
+Add AgentGate to Claude Desktop, Cursor, Windsurf, or any MCP client. Every API becomes a tool.
+
+```jsonc
+// claude_desktop_config.json or .mcp.json
+{
+  "mcpServers": {
+    "agentgate": {
+      "command": "node",
+      "args": ["path/to/agentgate/packages/mcp/dist/server.js"],
+      "env": {
+        "STRIPE_KEY": "sk_test_...",
+        "RESEND_KEY": "re_..."
+      }
+    }
+  }
+}
+```
+
+This registers **56 tools** — one per intent across 15 APIs, plus `agentgate__do` (natural language), `agentgate__discover` (search), and `agentgate__dry_run` (preview).
+
+### OpenAPI Converter
+
+Convert any OpenAPI spec to agents.json in one command:
+
+```bash
+# From a file
+agentgate-openapi petstore.json --name petstore --env PETSTORE_KEY -o specs/petstore.json
+
+# From a URL
+agentgate-openapi --url https://api.example.com/openapi.json -o specs/example.json
+
+# Programmatic
+import { convertOpenAPI } from '@grayhaven/agentgate-openapi'
+const agentSpec = convertOpenAPI(openapiSpec, { serviceName: 'stripe' })
 ```
 
 ### CLI
@@ -65,7 +110,7 @@ bunx agentgate list
 ### SDK
 
 ```typescript
-import { Gate } from 'agentgate'
+import { Gate } from '@grayhaven/agentgate'
 import { readFileSync, readdirSync } from 'fs'
 
 const specs = readdirSync('specs')
@@ -112,15 +157,12 @@ curl -X POST http://localhost:3100/resolve \
 
 # Discover capabilities
 curl "http://localhost:3100/discover?q=send+email"
-
-# Browse specs
-curl http://localhost:3100/specs
 ```
 
 Or use the `HttpResolver` from the SDK to resolve remotely:
 
 ```typescript
-import { Gate, HttpResolver } from 'agentgate'
+import { Gate, HttpResolver } from '@grayhaven/agentgate'
 
 const gate = new Gate({
   specs,
@@ -144,14 +186,6 @@ const gate = new Gate({
   auth: new VaultAuthProvider(vault, specs, 'bot-1')
 })
 await gate.do("get balance") // uses encrypted credential with permission check
-```
-
-### Registry
-
-```bash
-cd packages/registry
-bun run build        # static export to out/
-bunx serve out     # http://localhost:3000
 ```
 
 ### Crawler
@@ -201,28 +235,28 @@ Drop at `example.com/.well-known/agents.json`:
 }
 ```
 
-5 specs included: Stripe, Resend, GitHub, Twilio, OpenAI (26 intents total).
+15 specs included: Stripe, Resend, GitHub, Twilio, OpenAI, Anthropic, Slack, Discord, Cloudflare, Vercel, Postmark, SendGrid, Replicate, Supabase, Lemon Squeezy (53 intents total).
 
 ## Tests
 
 ```bash
-bun run test    # 236 tests across 7 packages
+bun run test    # 245 tests across 8 packages
 ```
 
 ## Architecture
 
 ```
-Agent → gate.do("charge cus_123 $49.99")
-         ↓
-       Resolver (local pattern matching or remote HTTP)
-         ↓
-       Validator (check required params)
-         ↓
-       Auth (env vars, vault, or custom provider)
-         ↓
-       Executor (fetch with correct content-type)
-         ↓
-       Real API call → Stripe, Resend, GitHub, etc.
+Claude/Cursor/Agent
+    ↓ (MCP or SDK)
+  gate.do("charge cus_123 $49.99")
+    ↓
+  Resolver (local pattern matching or remote HTTP)
+    ↓
+  Auth (env vars, vault, or custom provider)
+    ↓
+  Executor (fetch with correct content-type)
+    ↓
+  Real API call → Stripe, Resend, GitHub, etc.
 ```
 
 ## License

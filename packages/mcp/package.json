@@ -1,0 +1,30 @@
+{
+	"name": "@grayhaven/agentgate-mcp",
+	"version": "0.1.0",
+	"description": "AgentGate MCP server — expose any API as tools for Claude, Cursor, and other MCP clients",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"bin": {
+		"agentgate-mcp": "./dist/server.js"
+	},
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"default": "./dist/index.js"
+		}
+	},
+	"scripts": {
+		"build": "tsc",
+		"test": "vitest run"
+	},
+	"dependencies": {
+		"@modelcontextprotocol/sdk": "^1.12.0",
+		"@grayhaven/agentgate-schema": "workspace:*",
+		"@grayhaven/agentgate": "workspace:*",
+		"zod": "^3.25.0"
+	},
+	"devDependencies": {
+		"@types/node": "^22.0.0"
+	}
+}
