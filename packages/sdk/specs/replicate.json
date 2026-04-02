@@ -1,0 +1,83 @@
+{
+	"version": "1.0",
+	"service": {
+		"name": "replicate",
+		"description": "Replicate API for running machine learning models",
+		"baseUrl": "https://api.replicate.com"
+	},
+	"auth": {
+		"type": "bearer",
+		"envVar": "REPLICATE_API_TOKEN",
+		"prefix": "Bearer"
+	},
+	"intents": [
+		{
+			"id": "create_prediction",
+			"description": "Create a new prediction by running a model",
+			"patterns": [
+				"run replicate model {version} with {input}",
+				"create prediction on {version}",
+				"predict using model {version}"
+			],
+			"endpoint": { "method": "POST", "path": "/v1/predictions" },
+			"params": [
+				{
+					"name": "version",
+					"type": "string",
+					"required": true,
+					"description": "The model version ID to run (owner/model:version format)",
+					"in": "body"
+				},
+				{
+					"name": "input",
+					"type": "object",
+					"required": true,
+					"description": "Model-specific input parameters",
+					"in": "body"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Prediction object with id, status, and output URL"
+			}
+		},
+		{
+			"id": "get_prediction",
+			"description": "Get the status and output of a prediction",
+			"patterns": [
+				"get prediction {prediction_id}",
+				"check replicate prediction {prediction_id}",
+				"status of prediction {prediction_id}"
+			],
+			"endpoint": { "method": "GET", "path": "/v1/predictions/{prediction_id}" },
+			"params": [
+				{
+					"name": "prediction_id",
+					"type": "string",
+					"required": true,
+					"description": "The ID of the prediction to retrieve",
+					"in": "path"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Prediction object with status, output, and metrics"
+			}
+		},
+		{
+			"id": "list_models",
+			"description": "List public models on Replicate",
+			"patterns": [
+				"list replicate models",
+				"search replicate models",
+				"show available models on replicate"
+			],
+			"endpoint": { "method": "GET", "path": "/v1/models" },
+			"params": [],
+			"response": {
+				"type": "object",
+				"description": "Paginated list of model objects with owner, name, and description"
+			}
+		}
+	]
+}

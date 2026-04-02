@@ -1,0 +1,155 @@
+{
+	"version": "1.0",
+	"service": {
+		"name": "openai",
+		"description": "AI models API for text generation, embeddings, and image creation",
+		"baseUrl": "https://api.openai.com"
+	},
+	"auth": {
+		"type": "bearer",
+		"envVar": "OPENAI_API_KEY",
+		"prefix": "Bearer"
+	},
+	"intents": [
+		{
+			"id": "create_chat_completion",
+			"description": "Generate a chat completion using a language model",
+			"patterns": [
+				"complete {prompt}",
+				"chat {prompt}",
+				"ask openai {prompt}",
+				"generate response to {prompt}"
+			],
+			"endpoint": { "method": "POST", "path": "/v1/chat/completions" },
+			"params": [
+				{
+					"name": "prompt",
+					"type": "string",
+					"required": true,
+					"description": "The user message/prompt to send",
+					"in": "body"
+				},
+				{
+					"name": "model",
+					"type": "string",
+					"required": false,
+					"description": "Model ID to use",
+					"in": "body",
+					"default": "gpt-4o"
+				},
+				{
+					"name": "temperature",
+					"type": "number",
+					"required": false,
+					"description": "Sampling temperature (0-2)",
+					"in": "body",
+					"default": 1
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Chat completion response",
+				"properties": {
+					"id": { "type": "string", "description": "Completion ID" },
+					"choices": {
+						"type": "array",
+						"description": "Generated completions"
+					},
+					"usage": { "type": "object", "description": "Token usage stats" }
+				}
+			}
+		},
+		{
+			"id": "create_embedding",
+			"description": "Create text embeddings for semantic search",
+			"patterns": [
+				"embed {input}",
+				"create embedding for {input}",
+				"vectorize {input}"
+			],
+			"endpoint": { "method": "POST", "path": "/v1/embeddings" },
+			"params": [
+				{
+					"name": "input",
+					"type": "string",
+					"required": true,
+					"description": "Text to embed",
+					"in": "body"
+				},
+				{
+					"name": "model",
+					"type": "string",
+					"required": false,
+					"description": "Embedding model to use",
+					"in": "body",
+					"default": "text-embedding-3-small"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Embedding response with vectors"
+			}
+		},
+		{
+			"id": "list_models",
+			"description": "List available OpenAI models",
+			"patterns": ["list openai models", "show models", "get available models"],
+			"endpoint": { "method": "GET", "path": "/v1/models" },
+			"params": [],
+			"response": {
+				"type": "object",
+				"description": "List of available models"
+			}
+		},
+		{
+			"id": "create_image",
+			"description": "Generate an image from a text prompt",
+			"patterns": [
+				"generate image {prompt}",
+				"create image {prompt}",
+				"draw {prompt}"
+			],
+			"endpoint": { "method": "POST", "path": "/v1/images/generations" },
+			"params": [
+				{
+					"name": "prompt",
+					"type": "string",
+					"required": true,
+					"description": "Text description of the image to generate",
+					"in": "body"
+				},
+				{
+					"name": "model",
+					"type": "string",
+					"required": false,
+					"description": "Image model to use",
+					"in": "body",
+					"default": "dall-e-3"
+				},
+				{
+					"name": "size",
+					"type": "string",
+					"required": false,
+					"description": "Image size",
+					"in": "body",
+					"default": "1024x1024"
+				},
+				{
+					"name": "n",
+					"type": "number",
+					"required": false,
+					"description": "Number of images to generate",
+					"in": "body",
+					"default": 1
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Image generation response",
+				"properties": {
+					"data": { "type": "array", "description": "Generated image URLs" }
+				}
+			}
+		}
+	]
+}

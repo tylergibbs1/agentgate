@@ -1,0 +1,134 @@
+{
+	"version": "1.0",
+	"service": {
+		"name": "resend",
+		"description": "Email API for developers",
+		"baseUrl": "https://api.resend.com"
+	},
+	"auth": {
+		"type": "bearer",
+		"envVar": "RESEND_KEY",
+		"prefix": "Bearer"
+	},
+	"intents": [
+		{
+			"id": "send_email",
+			"description": "Send a transactional email",
+			"patterns": [
+				"send email to {to}",
+				"send {to} an email",
+				"email {to}",
+				"send email to {to} with subject {subject}"
+			],
+			"endpoint": { "method": "POST", "path": "/emails" },
+			"params": [
+				{
+					"name": "to",
+					"type": "string",
+					"required": true,
+					"description": "Recipient email address",
+					"in": "body"
+				},
+				{
+					"name": "subject",
+					"type": "string",
+					"required": false,
+					"description": "Email subject line",
+					"in": "body",
+					"default": ""
+				},
+				{
+					"name": "from",
+					"type": "string",
+					"required": false,
+					"description": "Sender email address",
+					"in": "body",
+					"default": "onboarding@resend.dev"
+				},
+				{
+					"name": "html",
+					"type": "string",
+					"required": false,
+					"description": "HTML body content",
+					"in": "body"
+				},
+				{
+					"name": "text",
+					"type": "string",
+					"required": false,
+					"default": "Sent via AgentGate",
+					"description": "Plain text body content",
+					"in": "body"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Email send result",
+				"properties": {
+					"id": { "type": "string", "description": "Email ID" }
+				}
+			}
+		},
+		{
+			"id": "get_email",
+			"description": "Get the status of a sent email",
+			"patterns": [
+				"get email {id}",
+				"check email status {id}",
+				"email status {id}"
+			],
+			"endpoint": { "method": "GET", "path": "/emails/{id}" },
+			"params": [
+				{
+					"name": "id",
+					"type": "string",
+					"required": true,
+					"description": "Email ID to check",
+					"in": "path"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Email object with delivery status"
+			}
+		},
+		{
+			"id": "list_domains",
+			"description": "List all verified sending domains",
+			"patterns": ["list domains", "show domains", "get domains"],
+			"endpoint": { "method": "GET", "path": "/domains" },
+			"params": [],
+			"response": {
+				"type": "object",
+				"description": "List of domain objects"
+			}
+		},
+		{
+			"id": "create_api_key",
+			"description": "Create a new API key",
+			"patterns": [
+				"create api key {name}",
+				"new api key {name}",
+				"generate api key {name}"
+			],
+			"endpoint": { "method": "POST", "path": "/api-keys" },
+			"params": [
+				{
+					"name": "name",
+					"type": "string",
+					"required": true,
+					"description": "Name for the API key",
+					"in": "body"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Created API key",
+				"properties": {
+					"id": { "type": "string", "description": "API key ID" },
+					"token": { "type": "string", "description": "API key token" }
+				}
+			}
+		}
+	]
+}

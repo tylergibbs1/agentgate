@@ -1,0 +1,107 @@
+{
+	"version": "1.0",
+	"service": {
+		"name": "supabase",
+		"description": "Supabase REST API for database operations via PostgREST",
+		"baseUrl": "https://YOUR_PROJECT.supabase.co"
+	},
+	"auth": {
+		"type": "bearer",
+		"envVar": "SUPABASE_KEY",
+		"prefix": "Bearer",
+		"header": "apikey"
+	},
+	"intents": [
+		{
+			"id": "insert_row",
+			"description": "Insert a row into a Supabase table",
+			"patterns": [
+				"insert into {table}",
+				"add row to {table}",
+				"create record in {table}"
+			],
+			"endpoint": { "method": "POST", "path": "/rest/v1/{table}" },
+			"params": [
+				{
+					"name": "table",
+					"type": "string",
+					"required": true,
+					"description": "The name of the table to insert into",
+					"in": "path"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "The inserted row with generated fields"
+			}
+		},
+		{
+			"id": "select_rows",
+			"description": "Select rows from a Supabase table",
+			"patterns": [
+				"select from {table}",
+				"get rows from {table}",
+				"query {table}",
+				"list records in {table}"
+			],
+			"endpoint": { "method": "GET", "path": "/rest/v1/{table}" },
+			"params": [
+				{
+					"name": "table",
+					"type": "string",
+					"required": true,
+					"description": "The name of the table to query",
+					"in": "path"
+				},
+				{
+					"name": "select",
+					"type": "string",
+					"required": false,
+					"description": "Comma-separated list of columns to return (default *)",
+					"in": "query"
+				},
+				{
+					"name": "limit",
+					"type": "number",
+					"required": false,
+					"description": "Maximum number of rows to return",
+					"in": "query"
+				},
+				{
+					"name": "order",
+					"type": "string",
+					"required": false,
+					"description": "Column to order by (e.g. created_at.desc)",
+					"in": "query"
+				}
+			],
+			"response": {
+				"type": "array",
+				"description": "Array of row objects matching the query"
+			}
+		},
+		{
+			"id": "delete_row",
+			"description": "Delete rows from a Supabase table",
+			"patterns": [
+				"delete from {table} where {column} equals {value}",
+				"remove rows from {table}",
+				"delete record from {table}"
+			],
+			"endpoint": { "method": "DELETE", "path": "/rest/v1/{table}" },
+			"params": [
+				{
+					"name": "table",
+					"type": "string",
+					"required": true,
+					"description": "The name of the table to delete from",
+					"in": "path"
+				}
+			],
+			"response": {
+				"type": "array",
+				"description": "Array of deleted row objects"
+			}
+		}
+	]
+}

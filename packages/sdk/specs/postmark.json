@@ -1,0 +1,119 @@
+{
+	"version": "1.0",
+	"service": {
+		"name": "postmark",
+		"description": "Postmark API for transactional email delivery",
+		"baseUrl": "https://api.postmarkapp.com"
+	},
+	"auth": {
+		"type": "api_key",
+		"envVar": "POSTMARK_KEY",
+		"header": "X-Postmark-Server-Token"
+	},
+	"intents": [
+		{
+			"id": "send_email",
+			"description": "Send a transactional email via Postmark",
+			"patterns": [
+				"send email to {To} with subject {Subject}",
+				"email {To} about {Subject}",
+				"send postmark email to {To}"
+			],
+			"endpoint": { "method": "POST", "path": "/email" },
+			"params": [
+				{
+					"name": "From",
+					"type": "string",
+					"required": true,
+					"description": "Sender email address (must be a verified sender signature)",
+					"in": "body"
+				},
+				{
+					"name": "To",
+					"type": "string",
+					"required": true,
+					"description": "Recipient email address",
+					"in": "body"
+				},
+				{
+					"name": "Subject",
+					"type": "string",
+					"required": true,
+					"description": "Email subject line",
+					"in": "body"
+				},
+				{
+					"name": "TextBody",
+					"type": "string",
+					"required": false,
+					"description": "Plain text body of the email",
+					"in": "body"
+				},
+				{
+					"name": "HtmlBody",
+					"type": "string",
+					"required": false,
+					"description": "HTML body of the email",
+					"in": "body"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Send result with MessageID, SubmittedAt, and status"
+			}
+		},
+		{
+			"id": "get_email_status",
+			"description": "Get delivery details for a specific message",
+			"patterns": [
+				"get email status for {messageid}",
+				"check postmark message {messageid}",
+				"get delivery status of {messageid}"
+			],
+			"endpoint": { "method": "GET", "path": "/messages/outbound/{messageid}/details" },
+			"params": [
+				{
+					"name": "messageid",
+					"type": "string",
+					"required": true,
+					"description": "The MessageID returned when the email was sent",
+					"in": "path"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Message details including status, recipients, and timestamps"
+			}
+		},
+		{
+			"id": "list_templates",
+			"description": "List email templates in the Postmark server",
+			"patterns": [
+				"list postmark templates",
+				"show email templates",
+				"get postmark templates"
+			],
+			"endpoint": { "method": "GET", "path": "/templates" },
+			"params": [
+				{
+					"name": "Count",
+					"type": "number",
+					"required": false,
+					"description": "Number of templates to return (default 100)",
+					"in": "query"
+				},
+				{
+					"name": "Offset",
+					"type": "number",
+					"required": false,
+					"description": "Number of templates to skip",
+					"in": "query"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Paginated list of template objects"
+			}
+		}
+	]
+}

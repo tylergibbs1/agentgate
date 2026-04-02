@@ -1,0 +1,105 @@
+{
+	"version": "1.0",
+	"service": {
+		"name": "discord",
+		"description": "Discord API for bot messaging and server management",
+		"baseUrl": "https://discord.com/api/v10"
+	},
+	"auth": {
+		"type": "bearer",
+		"envVar": "DISCORD_TOKEN",
+		"prefix": "Bot"
+	},
+	"intents": [
+		{
+			"id": "send_message",
+			"description": "Send a message to a Discord channel",
+			"patterns": [
+				"send message {content} to discord channel {channel_id}",
+				"post {content} in discord channel {channel_id}",
+				"message discord channel {channel_id} with {content}"
+			],
+			"endpoint": { "method": "POST", "path": "/channels/{channel_id}/messages" },
+			"params": [
+				{
+					"name": "channel_id",
+					"type": "string",
+					"required": true,
+					"description": "The ID of the channel to send the message to",
+					"in": "path"
+				},
+				{
+					"name": "content",
+					"type": "string",
+					"required": true,
+					"description": "The message content to send",
+					"in": "body"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "The created message object with id, content, author, and timestamp"
+			}
+		},
+		{
+			"id": "list_channels",
+			"description": "List all channels in a Discord guild",
+			"patterns": [
+				"list discord channels in guild {guild_id}",
+				"show channels for server {guild_id}",
+				"get discord server {guild_id} channels"
+			],
+			"endpoint": { "method": "GET", "path": "/guilds/{guild_id}/channels" },
+			"params": [
+				{
+					"name": "guild_id",
+					"type": "string",
+					"required": true,
+					"description": "The ID of the guild (server) to list channels for",
+					"in": "path"
+				}
+			],
+			"response": {
+				"type": "array",
+				"description": "List of channel objects with name, type, and position"
+			}
+		},
+		{
+			"id": "create_channel",
+			"description": "Create a new channel in a Discord guild",
+			"patterns": [
+				"create discord channel {name} in guild {guild_id}",
+				"add channel {name} to server {guild_id}",
+				"new discord channel {name} in {guild_id}"
+			],
+			"endpoint": { "method": "POST", "path": "/guilds/{guild_id}/channels" },
+			"params": [
+				{
+					"name": "guild_id",
+					"type": "string",
+					"required": true,
+					"description": "The ID of the guild to create the channel in",
+					"in": "path"
+				},
+				{
+					"name": "name",
+					"type": "string",
+					"required": true,
+					"description": "The name of the new channel",
+					"in": "body"
+				},
+				{
+					"name": "type",
+					"type": "number",
+					"required": false,
+					"description": "Channel type (0 = text, 2 = voice, 4 = category)",
+					"in": "body"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "The created channel object"
+			}
+		}
+	]
+}

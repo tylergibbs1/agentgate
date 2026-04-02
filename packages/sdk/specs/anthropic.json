@@ -1,0 +1,67 @@
+{
+	"version": "1.0",
+	"service": {
+		"name": "anthropic",
+		"description": "Anthropic Messages API for Claude language models",
+		"baseUrl": "https://api.anthropic.com"
+	},
+	"auth": {
+		"type": "api_key",
+		"envVar": "ANTHROPIC_API_KEY",
+		"header": "x-api-key"
+	},
+	"intents": [
+		{
+			"id": "create_message",
+			"description": "Create a message using a Claude model",
+			"patterns": [
+				"send message {prompt} to claude",
+				"ask claude {prompt}",
+				"create message {prompt}",
+				"generate response {prompt} with claude"
+			],
+			"endpoint": { "method": "POST", "path": "/v1/messages" },
+			"params": [
+				{
+					"name": "model",
+					"type": "string",
+					"required": true,
+					"description": "The model to use (e.g. claude-sonnet-4-20250514)",
+					"in": "body"
+				},
+				{
+					"name": "max_tokens",
+					"type": "number",
+					"required": true,
+					"description": "The maximum number of tokens to generate",
+					"in": "body"
+				},
+				{
+					"name": "prompt",
+					"type": "string",
+					"required": true,
+					"description": "The user message content to send",
+					"in": "body"
+				},
+				{
+					"name": "system",
+					"type": "string",
+					"required": false,
+					"description": "System prompt to set context for the conversation",
+					"in": "body"
+				},
+				{
+					"name": "temperature",
+					"type": "number",
+					"required": false,
+					"description": "Sampling temperature (0-1)",
+					"in": "body"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Message response with generated content, token usage, and stop reason"
+			}
+		}
+	]
+}

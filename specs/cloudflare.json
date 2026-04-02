@@ -1,0 +1,140 @@
+{
+	"version": "1.0",
+	"service": {
+		"name": "cloudflare",
+		"description": "Cloudflare API for managing DNS, zones, and security",
+		"baseUrl": "https://api.cloudflare.com"
+	},
+	"auth": {
+		"type": "bearer",
+		"envVar": "CLOUDFLARE_API_TOKEN",
+		"prefix": "Bearer"
+	},
+	"intents": [
+		{
+			"id": "list_zones",
+			"description": "List all zones (domains) in the Cloudflare account",
+			"patterns": [
+				"list cloudflare zones",
+				"show my domains on cloudflare",
+				"get all cloudflare zones"
+			],
+			"endpoint": { "method": "GET", "path": "/client/v4/zones" },
+			"params": [
+				{
+					"name": "name",
+					"type": "string",
+					"required": false,
+					"description": "Filter zones by domain name",
+					"in": "query"
+				},
+				{
+					"name": "per_page",
+					"type": "number",
+					"required": false,
+					"description": "Number of zones per page (default 20, max 50)",
+					"in": "query"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Paginated list of zone objects with name, status, and name servers"
+			}
+		},
+		{
+			"id": "create_dns_record",
+			"description": "Create a DNS record for a zone",
+			"patterns": [
+				"create DNS record {type} {name} pointing to {content} in zone {zone_id}",
+				"add {type} record for {name} to {content} in {zone_id}",
+				"create cloudflare DNS {type} {name} {content}"
+			],
+			"endpoint": { "method": "POST", "path": "/client/v4/zones/{zone_id}/dns_records" },
+			"params": [
+				{
+					"name": "zone_id",
+					"type": "string",
+					"required": true,
+					"description": "The zone ID to create the record in",
+					"in": "path"
+				},
+				{
+					"name": "type",
+					"type": "string",
+					"required": true,
+					"description": "DNS record type (A, AAAA, CNAME, TXT, MX, etc.)",
+					"in": "body"
+				},
+				{
+					"name": "name",
+					"type": "string",
+					"required": true,
+					"description": "DNS record name (e.g. example.com or sub.example.com)",
+					"in": "body"
+				},
+				{
+					"name": "content",
+					"type": "string",
+					"required": true,
+					"description": "DNS record content (e.g. IP address or target hostname)",
+					"in": "body"
+				},
+				{
+					"name": "proxied",
+					"type": "boolean",
+					"required": false,
+					"description": "Whether the record is proxied through Cloudflare (default false)",
+					"in": "body"
+				},
+				{
+					"name": "ttl",
+					"type": "number",
+					"required": false,
+					"description": "TTL in seconds (1 = automatic)",
+					"in": "body"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "The created DNS record object"
+			}
+		},
+		{
+			"id": "list_dns_records",
+			"description": "List DNS records for a zone",
+			"patterns": [
+				"list DNS records for zone {zone_id}",
+				"show cloudflare DNS records in {zone_id}",
+				"get DNS records for {zone_id}"
+			],
+			"endpoint": { "method": "GET", "path": "/client/v4/zones/{zone_id}/dns_records" },
+			"params": [
+				{
+					"name": "zone_id",
+					"type": "string",
+					"required": true,
+					"description": "The zone ID to list records for",
+					"in": "path"
+				},
+				{
+					"name": "type",
+					"type": "string",
+					"required": false,
+					"description": "Filter by record type (A, CNAME, etc.)",
+					"in": "query"
+				},
+				{
+					"name": "name",
+					"type": "string",
+					"required": false,
+					"description": "Filter by record name",
+					"in": "query"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "Paginated list of DNS record objects"
+			}
+		}
+	]
+}

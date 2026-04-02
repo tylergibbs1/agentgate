@@ -5,7 +5,7 @@ import { validateSpec } from "@agentgate/schema";
 
 /**
  * Load all agents.json spec files from a directory.
- * Defaults to the specs/ directory at the repo root.
+ * Searches: explicit path → ./specs → bundled specs inside the package.
  */
 export function loadSpecs(specsDir?: string): AgentSpec[] {
 	const dir = specsDir ?? findSpecsDir();
@@ -37,18 +37,21 @@ export function loadSpecs(specsDir?: string): AgentSpec[] {
 }
 
 function findSpecsDir(): string {
-	// Walk up from the current file to find the specs directory
-	// In the built CLI, this will be packages/sdk/dist/cli/util.js
-	// The specs dir is at the repo root: ../../specs relative to packages/sdk
 	const candidates = [
+		// 1. ./specs in current working directory
 		resolve(process.cwd(), "specs"),
+		// 2. Bundled specs inside the npm package (dist/cli/util.js → ../../specs)
+		resolve(import.meta.dirname ?? ".", "..", "..", "specs"),
+		// 3. Monorepo root specs (dev mode)
 		resolve(import.meta.dirname ?? ".", "..", "..", "..", "..", "specs"),
 	];
 
 	for (const candidate of candidates) {
 		try {
-			readdirSync(candidate);
-			return candidate;
+			const files = readdirSync(candidate);
+			if (files.some((f) => f.endsWith(".json"))) {
+				return candidate;
+			}
 		} catch {
 			// Try next
 		}

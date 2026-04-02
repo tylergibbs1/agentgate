@@ -1,0 +1,91 @@
+{
+	"version": "1.0",
+	"service": {
+		"name": "lemon-squeezy",
+		"description": "Lemon Squeezy API for digital product sales and subscription management",
+		"baseUrl": "https://api.lemonsqueezy.com"
+	},
+	"auth": {
+		"type": "bearer",
+		"envVar": "LEMONSQUEEZY_API_KEY",
+		"prefix": "Bearer"
+	},
+	"intents": [
+		{
+			"id": "list_products",
+			"description": "List all products in your Lemon Squeezy store",
+			"patterns": [
+				"list lemon squeezy products",
+				"show my products",
+				"get all products on lemon squeezy"
+			],
+			"endpoint": { "method": "GET", "path": "/v1/products" },
+			"params": [
+				{
+					"name": "filter[store_id]",
+					"type": "number",
+					"required": false,
+					"description": "Filter products by store ID",
+					"in": "query"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "JSON:API response with array of product objects"
+			}
+		},
+		{
+			"id": "list_orders",
+			"description": "List all orders in your Lemon Squeezy store",
+			"patterns": [
+				"list lemon squeezy orders",
+				"show my orders",
+				"get all lemon squeezy orders"
+			],
+			"endpoint": { "method": "GET", "path": "/v1/orders" },
+			"params": [
+				{
+					"name": "filter[store_id]",
+					"type": "number",
+					"required": false,
+					"description": "Filter orders by store ID",
+					"in": "query"
+				},
+				{
+					"name": "filter[user_email]",
+					"type": "string",
+					"required": false,
+					"description": "Filter orders by customer email",
+					"in": "query"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "JSON:API response with array of order objects"
+			}
+		},
+		{
+			"id": "get_order",
+			"description": "Get details of a specific order",
+			"patterns": [
+				"get lemon squeezy order {id}",
+				"show order {id}",
+				"get order details for {id}"
+			],
+			"endpoint": { "method": "GET", "path": "/v1/orders/{id}" },
+			"params": [
+				{
+					"name": "id",
+					"type": "string",
+					"required": true,
+					"description": "The order ID to retrieve",
+					"in": "path"
+				}
+			],
+			"response": {
+				"type": "object",
+				"description": "JSON:API response with order object including status, total, and customer info"
+			}
+		}
+	]
+}

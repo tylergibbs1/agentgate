@@ -50,8 +50,8 @@ export default async function ServicePage({
 									{intent.id}
 								</CardTitle>
 								<Badge
-									variant="outline"
-									className="shrink-0 border-emerald-800/40 bg-emerald-950/30 font-mono text-[0.65rem] text-emerald-400"
+									variant="secondary"
+									className="shrink-0 font-mono text-[0.65rem]"
 								>
 									{intent.method} {intent.path}
 								</Badge>
@@ -69,7 +69,7 @@ export default async function ServicePage({
 									{intent.patterns.map((p) => (
 										<code
 											key={p}
-											className="rounded bg-primary/10 px-1.5 py-0.5 font-mono text-xs text-primary"
+											className="rounded bg-accent px-1.5 py-0.5 font-mono text-xs text-accent-foreground"
 										>
 											{p}
 										</code>
