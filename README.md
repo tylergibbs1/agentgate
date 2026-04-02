@@ -42,24 +42,24 @@ API providers publish an `agents.json` spec file describing their capabilities a
 ```bash
 git clone https://github.com/tylergibbs1/agentgate
 cd agentgate
-pnpm install
-pnpm build
+bun install
+bun run build
 ```
 
 ### CLI
 
 ```bash
 # Discover APIs by intent
-npx agentgate discover "send email"
+bunx agentgate discover "send email"
 
 # Validate a spec file
-npx agentgate validate specs/stripe.json
+bunx agentgate validate specs/stripe.json
 
 # Dry-run an intent (no API call)
-npx agentgate run "charge cus_123 \$49.99" --dry-run
+bunx agentgate run "charge cus_123 \$49.99" --dry-run
 
 # List all services and intents
-npx agentgate list
+bunx agentgate list
 ```
 
 ### SDK
@@ -150,18 +150,18 @@ await gate.do("get balance") // uses encrypted credential with permission check
 
 ```bash
 cd packages/registry
-pnpm build        # static export to out/
-npx serve out     # http://localhost:3000
+bun run build        # static export to out/
+bunx serve out     # http://localhost:3000
 ```
 
 ### Crawler
 
 ```bash
 # Crawl domains for agents.json
-npx agentgate-crawl example.com api.stripe.com
+bunx agentgate-crawl example.com api.stripe.com
 
 # Or from a file
-npx agentgate-crawl --file domains.txt --output index.json
+bunx agentgate-crawl --file domains.txt --output index.json
 ```
 
 ## The agents.json spec
@@ -206,7 +206,7 @@ Drop at `example.com/.well-known/agents.json`:
 ## Tests
 
 ```bash
-pnpm test    # 236 tests across 7 packages
+bun run test    # 236 tests across 7 packages
 ```
 
 ## Architecture

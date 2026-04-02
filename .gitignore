@@ -39,8 +39,7 @@ coverage/
 # Lock files from other package managers
 package-lock.json
 yarn.lock
-bun.lock
-bun.lockb
+pnpm-lock.yaml
 
 # Next.js
 next-env.d.ts
