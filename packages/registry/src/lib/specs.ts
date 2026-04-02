@@ -1,6 +1,7 @@
-import { readFileSync, readdirSync } from "node:fs";
-import { join, resolve } from "node:path";
 import type { AgentSpec } from "@agentgate/schema";
+import { eq } from "drizzle-orm";
+import { db } from "@/db";
+import { specs as specsTable } from "@/db/schema";
 
 export interface ServiceSummary {
 	name: string;
@@ -18,31 +19,22 @@ export interface ServiceSummary {
 	}>;
 }
 
-function getSpecsDir(): string {
-	return (
-		process.env.AGENTGATE_SPECS_DIR ??
-		resolve(process.cwd(), "..", "..", "specs")
-	);
+export async function getAllServices(): Promise<ServiceSummary[]> {
+	const rows = await db.select().from(specsTable).orderBy(specsTable.name);
+	return rows.map((row) => specToSummary(row.spec));
 }
 
-export function loadAllSpecs(): AgentSpec[] {
-	const dir = getSpecsDir();
-	try {
-		return readdirSync(dir)
-			.filter((f) => f.endsWith(".json"))
-			.map((f) => JSON.parse(readFileSync(join(dir, f), "utf-8")) as AgentSpec);
-	} catch {
-		return [];
-	}
-}
+export async function getService(
+	name: string,
+): Promise<ServiceSummary | undefined> {
+	const rows = await db
+		.select()
+		.from(specsTable)
+		.where(eq(specsTable.name, name))
+		.limit(1);
 
-export function getAllServices(): ServiceSummary[] {
-	return loadAllSpecs().map(specToSummary);
-}
-
-export function getService(name: string): ServiceSummary | undefined {
-	const spec = loadAllSpecs().find((s) => s.service.name === name);
-	return spec ? specToSummary(spec) : undefined;
+	const row = rows[0];
+	return row ? specToSummary(row.spec) : undefined;
 }
 
 function specToSummary(spec: AgentSpec): ServiceSummary {

@@ -1,12 +1,8 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getAllServices, getService } from "@/lib/specs";
+import { getService } from "@/lib/specs";
 import { notFound } from "next/navigation";
-
-export function generateStaticParams() {
-	return getAllServices().map((svc) => ({ service: svc.name }));
-}
 
 export default async function ServicePage({
 	params,
@@ -14,7 +10,7 @@ export default async function ServicePage({
 	params: Promise<{ service: string }>;
 }) {
 	const { service: serviceName } = await params;
-	const svc = getService(serviceName);
+	const svc = await getService(serviceName);
 	if (!svc) notFound();
 
 	return (

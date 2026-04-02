@@ -47,3 +47,4 @@ next-env.d.ts
 # Debug
 *.log
 npm-debug.log*
+.mcp.json

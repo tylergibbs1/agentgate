@@ -2,8 +2,10 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAllServices } from "@/lib/specs";
 
-export default function HomePage() {
-	const services = getAllServices();
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+	const services = await getAllServices();
 	const totalIntents = services.reduce((sum, s) => sum + s.intentCount, 0);
 
 	return (
