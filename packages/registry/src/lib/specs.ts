@@ -1,5 +1,6 @@
 import type { AgentSpec } from "@agentgate/schema";
 import { eq } from "drizzle-orm";
+import { cache } from "react";
 import { db } from "@/db";
 import { specs as specsTable } from "@/db/schema";
 
@@ -19,23 +20,27 @@ export interface ServiceSummary {
 	}>;
 }
 
-export async function getAllServices(): Promise<ServiceSummary[]> {
-	const rows = await db.select().from(specsTable).orderBy(specsTable.name);
-	return rows.map((row) => specToSummary(row.spec));
-}
+// React.cache() deduplicates within a single request — if both
+// layout and page call getAllServices, only one DB query fires.
+export const getAllServices = cache(
+	async (): Promise<ServiceSummary[]> => {
+		const rows = await db.select().from(specsTable).orderBy(specsTable.name);
+		return rows.map((row) => specToSummary(row.spec));
+	},
+);
 
-export async function getService(
-	name: string,
-): Promise<ServiceSummary | undefined> {
-	const rows = await db
-		.select()
-		.from(specsTable)
-		.where(eq(specsTable.name, name))
-		.limit(1);
+export const getService = cache(
+	async (name: string): Promise<ServiceSummary | undefined> => {
+		const rows = await db
+			.select()
+			.from(specsTable)
+			.where(eq(specsTable.name, name))
+			.limit(1);
 
-	const row = rows[0];
-	return row ? specToSummary(row.spec) : undefined;
-}
+		const row = rows[0];
+		return row ? specToSummary(row.spec) : undefined;
+	},
+);
 
 function specToSummary(spec: AgentSpec): ServiceSummary {
 	return {

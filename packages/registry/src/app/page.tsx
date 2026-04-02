@@ -1,6 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAllServices } from "@/lib/specs";
+import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
@@ -16,10 +17,11 @@ export default async function HomePage() {
 
 			<div className="grid gap-4">
 				{services.map((svc) => (
-					<a
+					<Link
 						key={svc.name}
 						href={`/${svc.name}`}
 						className="group block no-underline"
+						prefetch={true}
 					>
 						<Card className="transition-colors hover:border-primary/40">
 							<CardHeader className="pb-2">
@@ -43,7 +45,7 @@ export default async function HomePage() {
 								</div>
 							</CardContent>
 						</Card>
-					</a>
+					</Link>
 				))}
 			</div>
 		</main>

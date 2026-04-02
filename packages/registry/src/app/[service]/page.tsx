@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getService } from "@/lib/specs";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export default async function ServicePage({
@@ -15,11 +16,11 @@ export default async function ServicePage({
 
 	return (
 		<main>
-			<a href="/">
+			<Link href="/">
 				<Button variant="ghost" size="sm" className="mb-4 -ml-2">
 					&larr; All services
 				</Button>
-			</a>
+			</Link>
 
 			<div className="mb-8">
 				<h2 className="text-3xl font-bold tracking-tight">{svc.name}</h2>
@@ -72,12 +73,12 @@ export default async function ServicePage({
 									))}
 								</div>
 							</div>
-							{intent.paramCount > 0 && (
+							{intent.paramCount > 0 ? (
 								<p className="text-xs text-muted-foreground/50">
 									{intent.paramCount} parameter
 									{intent.paramCount > 1 ? "s" : ""}
 								</p>
-							)}
+							) : null}
 						</CardContent>
 					</Card>
 				))}
