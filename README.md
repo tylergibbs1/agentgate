@@ -1,6 +1,6 @@
 # AgentGate
 
-DNS for the agent era. A protocol + SDK that lets AI agents discover and call internet APIs via natural language intents.
+DNS for the agent era. A protocol + SDK that lets AI agents discover and call internet APIs via natural language intents. For agent builders who want one interface to many APIs, and for API providers who want agents to find them.
 
 ```typescript
 import { Gate } from '@grayhaven/agentgate'
@@ -14,6 +14,23 @@ const email = await gate.do("send email to bob@example.com")
 const user = await gate.do("get user octocat")
 ```
 
+## Quick start
+
+```bash
+bun add @grayhaven/agentgate
+```
+
+Or run everything from source (SDK, CLI, MCP server, bundled specs):
+
+```bash
+git clone https://github.com/tylergibbs1/agentgate
+cd agentgate
+bun install
+bun run build
+```
+
+See [`demo/`](demo/README.md) for a side-by-side of onboarding a user with and without AgentGate.
+
 ## How it works
 
 API providers publish an `agents.json` spec file describing their capabilities as intents with natural language patterns. The SDK resolves intents to API calls:
@@ -25,7 +42,31 @@ API providers publish an `agents.json` spec file describing their capabilities a
   → returns Stripe Charge object
 ```
 
-## Packages
+```
+Claude/Cursor/Agent
+    ↓ (MCP or SDK)
+  gate.do("charge cus_123 $49.99")
+    ↓
+  Resolver (local pattern matching or remote HTTP)
+    ↓
+  Auth (env vars, vault, or custom provider)
+    ↓
+  Executor (fetch with correct content-type)
+    ↓
+  Real API call → Stripe, Resend, GitHub, etc.
+```
+
+## Features
+
+- **Natural-language intents**: `gate.do("...")` resolves a phrase to a real API call; `doFlow` chains multi-step flows.
+- **15 bundled specs**: Stripe, Resend, GitHub, Twilio, OpenAI, Anthropic, Slack, Discord, Cloudflare, Vercel, Postmark, SendGrid, Replicate, Supabase, Lemon Squeezy (53 intents).
+- **MCP server**: every intent becomes a tool for Claude, Cursor, Windsurf, or any MCP client.
+- **Dry runs**: preview the endpoint and params without calling the API.
+- **Local or remote resolution**: pattern matching in-process, or an HTTP resolver service.
+- **Encrypted credentials**: an AES-256-GCM vault with per-agent permissions.
+- **OpenAPI import and web crawling**: convert existing OpenAPI specs, or discover `agents.json` files on the web.
+
+### Packages
 
 | Package | Description |
 |---|---|
@@ -38,20 +79,7 @@ API providers publish an `agents.json` spec file describing their capabilities a
 | `@agentgate/crawler` | Discover and index `agents.json` from the web |
 | `@agentgate/resolver-api` | Hono HTTP server for remote intent resolution |
 
-## Install
-
-```bash
-bun add @grayhaven/agentgate
-```
-
-## Quick start
-
-```bash
-git clone https://github.com/tylergibbs1/agentgate
-cd agentgate
-bun install
-bun run build
-```
+## Usage
 
 ### MCP Server
 
@@ -74,38 +102,6 @@ Add AgentGate to Claude Desktop, Cursor, Windsurf, or any MCP client. Every API 
 ```
 
 This registers **56 tools** — one per intent across 15 APIs, plus `agentgate__do` (natural language), `agentgate__discover` (search), and `agentgate__dry_run` (preview).
-
-### OpenAPI Converter
-
-Convert any OpenAPI spec to agents.json in one command:
-
-```bash
-# From a file
-agentgate-openapi petstore.json --name petstore --env PETSTORE_KEY -o specs/petstore.json
-
-# From a URL
-agentgate-openapi --url https://api.example.com/openapi.json -o specs/example.json
-
-# Programmatic
-import { convertOpenAPI } from '@grayhaven/agentgate-openapi'
-const agentSpec = convertOpenAPI(openapiSpec, { serviceName: 'stripe' })
-```
-
-### CLI
-
-```bash
-# Discover APIs by intent
-bunx agentgate discover "send email"
-
-# Validate a spec file
-bunx agentgate validate specs/stripe.json
-
-# Dry-run an intent (no API call)
-bunx agentgate run "charge cus_123 \$49.99" --dry-run
-
-# List all services and intents
-bunx agentgate list
-```
 
 ### SDK
 
@@ -142,6 +138,38 @@ const result = await gate.doFlow("stripe", "subscribe_new_customer", {
   price: "price_pro_monthly"
 })
 console.log(result.steps) // [create_customer result, create_subscription result]
+```
+
+### CLI
+
+```bash
+# Discover APIs by intent
+bunx agentgate discover "send email"
+
+# Validate a spec file
+bunx agentgate validate specs/stripe.json
+
+# Dry-run an intent (no API call)
+bunx agentgate run "charge cus_123 \$49.99" --dry-run
+
+# List all services and intents
+bunx agentgate list
+```
+
+### OpenAPI Converter
+
+Convert any OpenAPI spec to agents.json in one command:
+
+```bash
+# From a file
+agentgate-openapi petstore.json --name petstore --env PETSTORE_KEY -o specs/petstore.json
+
+# From a URL
+agentgate-openapi --url https://api.example.com/openapi.json -o specs/example.json
+
+# Programmatic
+import { convertOpenAPI } from '@grayhaven/agentgate-openapi'
+const agentSpec = convertOpenAPI(openapiSpec, { serviceName: 'stripe' })
 ```
 
 ### Resolver API
@@ -237,26 +265,14 @@ Drop at `example.com/.well-known/agents.json`:
 
 15 specs included: Stripe, Resend, GitHub, Twilio, OpenAI, Anthropic, Slack, Discord, Cloudflare, Vercel, Postmark, SendGrid, Replicate, Supabase, Lemon Squeezy (53 intents total).
 
-## Tests
+## Development
 
 ```bash
-bun run test    # 245 tests across 8 packages
-```
-
-## Architecture
-
-```
-Claude/Cursor/Agent
-    ↓ (MCP or SDK)
-  gate.do("charge cus_123 $49.99")
-    ↓
-  Resolver (local pattern matching or remote HTTP)
-    ↓
-  Auth (env vars, vault, or custom provider)
-    ↓
-  Executor (fetch with correct content-type)
-    ↓
-  Real API call → Stripe, Resend, GitHub, etc.
+bun install
+bun run build    # turbo build across packages
+bun run test     # 245 tests across 8 packages
+bun run lint     # biome check
+bun run format   # biome format
 ```
 
 ## License
